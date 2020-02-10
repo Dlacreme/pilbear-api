@@ -1,0 +1,13 @@
+name: pilbear-api
+version: 0.1.0
+
+authors:
+  - Mathieu D. <mathieu.delacroix.fr@gmail.com>
+
+targets:
+  pilbear-api:
+    main: src/pilbear-api.cr
+
+crystal: 0.32.1
+
+license: MIT
