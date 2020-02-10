@@ -1,13 +1,17 @@
-name: pilbear-api
+name: pilbear
 version: 0.1.0
 
 authors:
-  - Mathieu D. <mathieu.delacroix.fr@gmail.com>
+  - Mathieu D. <mathieu@pilbear.com>
 
 targets:
-  pilbear-api:
-    main: src/pilbear-api.cr
+  pilbear:
+    main: src/pilbear.cr
 
 crystal: 0.32.1
 
 license: MIT
+
+dependencies:
+  kemal:
+    github: kemalcr/kemal
