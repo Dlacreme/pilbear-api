@@ -7,7 +7,6 @@ module Pilbear::Middleware
   class DBMiddleware < Kemal::Handler
 
     def call(context)
-      puts "DB Middleware"
       call_next context
     end
 

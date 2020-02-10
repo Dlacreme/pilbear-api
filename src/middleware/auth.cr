@@ -7,7 +7,6 @@ module Pilbear::Middleware
   class AuthMiddleware < Kemal::Handler
 
     def call(context)
-      puts "Auth Middleware"
       call_next context
     end
 
