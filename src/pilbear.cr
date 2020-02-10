@@ -11,7 +11,7 @@ module Pilbear
   Pilbear::Setup.middleware
 
   get "/" do
-    {"Hello": "bite lol"}.to_json
+    {"Hello": "haha"}.to_json
   end
 
   Kemal.run
