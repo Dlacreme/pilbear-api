@@ -1,8 +1,14 @@
+require "kemal"
 
 module Pilbear::Handler
 
-  def initialize
-    puts "hello world"
+  class PilbearHandler
+
+    def not_implemented(context)
+      context.response.status_code = 521
+      {"error": "Not implemented"}.to_json
+    end
+
   end
 
 end

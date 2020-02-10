@@ -28,4 +28,12 @@ module Pilbear::Setup
     end
   end
 
+  def set_kemal_error
+    error 400 { {"error": "Invalid query"}.to_json }
+    error 401 { {"error": "Unauthorized"}.to_json }
+    error 404 { {"error": "Not found"}.to_json }
+    error 501 { {"error": "Server error"}.to_json }
+    error 501 { {"error": "Not implemented"}.to_json }
+  end
+
 end
