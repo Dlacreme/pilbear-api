@@ -18,3 +18,8 @@ dependencies:
   jennifer:
     github: imdrasil/jennifer.cr
     version: "~> 0.8.4"
+  pg:
+    github: will/crystal-pg
+  sam:
+    github: imdrasil/sam.cr
+    version: 0.3.2
