@@ -4,12 +4,15 @@
 ## Installation
 
 `$ shards install`
+`$ crystal sam.cr -- db:setup`
+`$ chmod +x ./dev/*.sh`
 
 ## Dev mode
 
-`$ ./sentry`
+`$ ./dev/dev.sh`
 
-## Usage
+## Contribute
 
+`$ crystal sam.cr -- generate:migration CreateContact`: create new migration
 
 ## Development
