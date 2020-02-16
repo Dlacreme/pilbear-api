@@ -1,6 +1,8 @@
+require "crypto/bcrypt/password"
 require "./_handler"
 require "../const"
 require "../models/user"
+require "../services/jwt"
 
 #
 module Pilbear::Handlers
@@ -8,17 +10,21 @@ module Pilbear::Handlers
   class UserHandler < PilbearHandler
 
     def get_me(context)
-      not_implemented(context)
+      current_user!(context).print.to_json
     end
 
     def get(context)
-      # puts context.params.url["id"]
-      not_implemented(context)
+      u = Models::User.find(context.params.url["id"])
+      return not_found(context, "User not found") if u == nil
+      u.as(Models::User).print.to_json
     end
 
     def search(context)
-      # puts context.params.query["q"]
-      not_implemented(context)
+      return ([] of String).to_json if !context.params.query["q"]
+      q = "%#{context.params.query["q"]}%"
+      users_q = Models::User.all.relation(:profile).where {
+        sql("email ILIKE %s OR profiles.first_name ILIKE %s OR profiles.nickname ILIKE %s OR profiles.last_name ILIKE %s", [q, q, q, q])
+      }.to_a.map { |u| u.print}.to_json
     end
 
     def login(context)
@@ -30,14 +36,12 @@ module Pilbear::Handlers
       users = Models::User.where { sql("email like '#{context.params.json["email"].as(String)}'")}.to_a
       return not_found(context, "Invalid credentials") if users.size == 0
       user = users[0]
-      # pwd = Crypto::Bcrypt::Password.create(, cost: 10)
-      return not_found(context, "Invalid credentials") if context.params.json["password"] != user.password
-
-      # puts user
-      # puts "login in with"
-      # puts context.params.json["email"]
-      # puts context.params.json["password"]
-      not_implemented(context)
+      return invalid_query(context, "Provider account") if user.password == nil
+      password = Crypto::Bcrypt::Password.new(user.password.as(String))
+      return not_found(context, "Invalid credentials") if password.verify(context.params.json["password"].as(String))
+      data = user.print
+      data["token"] = Services::JWT.encode(user.id.as(Int32))
+      data.to_json
     end
 
     def register(context)

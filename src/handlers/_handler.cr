@@ -1,13 +1,20 @@
 require "kemal"
-require "../services/jwt"
 require "../services/validator"
+require "../models/user"
 
 module Pilbear::Handlers
 
   class PilbearHandler
 
     @@validator = Services::Validator.new
-    @@jwt = Services::JWT.new
+
+    def current_user?(context) : Models::User?
+      return nil if context.get("user_id") == nil
+    end
+
+    def current_user!(context) : Models::User
+      Models::User.find!(context.get("user_id").as(Int32))
+    end
 
     def validate_body(context : HTTP::Server::Context, fields : Array(Tuple(String, Regex | Nil))) : Array(String)
       hash = context.params.json

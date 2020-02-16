@@ -1,4 +1,5 @@
 require "jennifer"
+require "./user"
 
 module Pilbear::Models
 
@@ -13,6 +14,8 @@ module Pilbear::Models
       birthdate: {type: Time, null: true},
       gender: {type: String, null: true, default: nil, converter: Jennifer::Model::EnumConverter}
     )
+
+    has_one :user, User
 
   end
 

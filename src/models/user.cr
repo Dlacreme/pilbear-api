@@ -17,18 +17,19 @@ module Pilbear::Models
       updated_at: {type: Time, null: true}
     )
 
-    has_one :profile, Profile
-
-    def self.get!(id : Int32) : Hash
-      u = User.find!(id)
-      puts u
-
-      return u.print
-    end
+    belongs_to :profile, Profile
 
     def print
+      p : Profile = (self.profile != nil ? self.profile : Models::Profile.find!(self.profile_id)).as(Profile)
       return {
-        "email" => u.email
+        "email" => self.email,
+        "role" => self.user_role,
+        "nickname" => p.nickname,
+        "first_name" => p.first_name,
+        "last_name" => p.last_name,
+        "picture_url" => p.picture_url,
+        "birthdate" => p.birthdate,
+        "gender" => p.gender
       }
     end
 
