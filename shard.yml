@@ -23,3 +23,9 @@ dependencies:
   sam:
     github: imdrasil/sam.cr
     version: 0.3.2
+  jwt:
+    github: crystal-community/jwt
+
+development_dependencies:
+  kemal-watcher:
+    github: faustinoaq/kemal-watcher

@@ -1,0 +1,1 @@
+PILBEAR_SECRET=helloworld ./sentry

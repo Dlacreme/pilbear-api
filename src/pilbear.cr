@@ -1,11 +1,14 @@
 require "kemal"
 require "kemal-watcher"
 require "./setup"
-require "./handler/user"
+require "./handlers/user"
+require "../config/config"
 
 module Pilbear
   VERSION = "0.0.1"
 
+  # Make sure env is properly setup
+  Setup.validate_env
   # Open our static folder
   Setup.serve_static_file
   # Add our own middleware
@@ -13,7 +16,7 @@ module Pilbear
   # Use our customized errors
   Setup.set_kemal_error
 
-  userHandler = Handler::UserHandler.new
+  userHandler = Handlers::UserHandler.new
 
   # User
   get "/me" { |context| userHandler.get_me(context) }
