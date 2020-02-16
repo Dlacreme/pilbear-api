@@ -1,6 +1,7 @@
 require "jennifer"
 require "./city"
 require "./user"
+require "./event"
 
 module Pilbear::Models
   class Location < Jennifer::Model::Base
@@ -20,5 +21,6 @@ module Pilbear::Models
 
     belongs_to :city, City
     belongs_to :created_by, User
+    has_many :events, Event
   end
 end

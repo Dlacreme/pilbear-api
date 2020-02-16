@@ -17,6 +17,18 @@ SET client_min_messages = warning;
 SET row_security = off;
 
 --
+-- Name: confidentiality_enum; Type: TYPE; Schema: public; Owner: dlacreme
+--
+
+CREATE TYPE public.confidentiality_enum AS ENUM (
+    'public',
+    'private'
+);
+
+
+ALTER TYPE public.confidentiality_enum OWNER TO dlacreme;
+
+--
 -- Name: gender_enum; Type: TYPE; Schema: public; Owner: dlacreme
 --
 
@@ -55,6 +67,19 @@ ALTER TYPE public.user_role_enum OWNER TO dlacreme;
 SET default_tablespace = '';
 
 SET default_table_access_method = heap;
+
+--
+-- Name: categories; Type: TABLE; Schema: public; Owner: dlacreme
+--
+
+CREATE TABLE public.categories (
+    id character varying(255) NOT NULL,
+    label character varying(254) NOT NULL,
+    is_disabled boolean DEFAULT false NOT NULL
+);
+
+
+ALTER TABLE public.categories OWNER TO dlacreme;
 
 --
 -- Name: cities; Type: TABLE; Schema: public; Owner: dlacreme
@@ -103,6 +128,50 @@ CREATE TABLE public.countries (
 
 
 ALTER TABLE public.countries OWNER TO dlacreme;
+
+--
+-- Name: events; Type: TABLE; Schema: public; Owner: dlacreme
+--
+
+CREATE TABLE public.events (
+    id integer NOT NULL,
+    label character varying(255) NOT NULL,
+    description character varying(254),
+    confidentiality public.confidentiality_enum,
+    capacity integer NOT NULL,
+    created_by_id integer NOT NULL,
+    start_date timestamp without time zone NOT NULL,
+    end_date timestamp without time zone NOT NULL,
+    is_disabled boolean NOT NULL,
+    category_id character varying(255) NOT NULL,
+    created_at timestamp without time zone NOT NULL,
+    updated_at timestamp without time zone NOT NULL
+);
+
+
+ALTER TABLE public.events OWNER TO dlacreme;
+
+--
+-- Name: events_id_seq; Type: SEQUENCE; Schema: public; Owner: dlacreme
+--
+
+CREATE SEQUENCE public.events_id_seq
+    AS integer
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+ALTER TABLE public.events_id_seq OWNER TO dlacreme;
+
+--
+-- Name: events_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: dlacreme
+--
+
+ALTER SEQUENCE public.events_id_seq OWNED BY public.events.id;
+
 
 --
 -- Name: languages; Type: TABLE; Schema: public; Owner: dlacreme
@@ -281,6 +350,13 @@ ALTER TABLE ONLY public.cities ALTER COLUMN id SET DEFAULT nextval('public.citie
 
 
 --
+-- Name: events id; Type: DEFAULT; Schema: public; Owner: dlacreme
+--
+
+ALTER TABLE ONLY public.events ALTER COLUMN id SET DEFAULT nextval('public.events_id_seq'::regclass);
+
+
+--
 -- Name: locations id; Type: DEFAULT; Schema: public; Owner: dlacreme
 --
 
@@ -309,6 +385,14 @@ ALTER TABLE ONLY public.users ALTER COLUMN id SET DEFAULT nextval('public.users_
 
 
 --
+-- Name: categories categories_pkey; Type: CONSTRAINT; Schema: public; Owner: dlacreme
+--
+
+ALTER TABLE ONLY public.categories
+    ADD CONSTRAINT categories_pkey PRIMARY KEY (id);
+
+
+--
 -- Name: cities cities_pkey; Type: CONSTRAINT; Schema: public; Owner: dlacreme
 --
 
@@ -322,6 +406,14 @@ ALTER TABLE ONLY public.cities
 
 ALTER TABLE ONLY public.countries
     ADD CONSTRAINT countries_pkey PRIMARY KEY (id);
+
+
+--
+-- Name: events events_pkey; Type: CONSTRAINT; Schema: public; Owner: dlacreme
+--
+
+ALTER TABLE ONLY public.events
+    ADD CONSTRAINT events_pkey PRIMARY KEY (id);
 
 
 --
