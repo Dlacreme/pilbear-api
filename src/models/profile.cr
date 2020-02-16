@@ -11,7 +11,7 @@ module Pilbear::Models
       last_name: {type: String, null: true},
       picture_url: {type: String, null: true},
       birthdate: {type: Time, null: true},
-      gender: {type: String, null: true, default: nil}
+      gender: {type: String, null: true, default: nil, converter: Jennifer::Model::EnumConverter}
     )
 
   end

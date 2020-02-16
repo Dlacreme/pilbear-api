@@ -27,12 +27,13 @@ module Pilbear::Handlers
         {"password", nil}
       ])
       return invalid_query(context, "Missing field(s): #{missing_fields}") if missing_fields.size > 0
-      users = Models::User.where {email == context.params.json["email"]}.to_a
+      users = Models::User.where { sql("email like '#{context.params.json["email"].as(String)}'")}.to_a
       return not_found(context, "Invalid credentials") if users.size == 0
       user = users[0]
-      return not_found(context, "Invalid credentials") if user.password.
+      # pwd = Crypto::Bcrypt::Password.create(, cost: 10)
+      return not_found(context, "Invalid credentials") if context.params.json["password"] != user.password
 
-      puts user
+      # puts user
       # puts "login in with"
       # puts context.params.json["email"]
       # puts context.params.json["password"]

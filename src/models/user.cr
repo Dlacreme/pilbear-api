@@ -11,7 +11,7 @@ module Pilbear::Models
       password: {type: String, null: true},
       user_provider: {type: String, null: true},
       provider_id: {type: String, null: true},
-      user_role: {type: String, null: false, default: "user"},
+      user_role: {type: String, null: false, default: "user", converter: Jennifer::Model::EnumConverter},
       profile_id: {type: Int32, null: false},
       created_at: {type: Time, null: true},
       updated_at: {type: Time, null: true}
