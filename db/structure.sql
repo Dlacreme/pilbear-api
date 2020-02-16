@@ -57,6 +57,109 @@ SET default_tablespace = '';
 SET default_table_access_method = heap;
 
 --
+-- Name: cities; Type: TABLE; Schema: public; Owner: dlacreme
+--
+
+CREATE TABLE public.cities (
+    id integer NOT NULL,
+    label character varying(255) NOT NULL,
+    country_id character varying(3) NOT NULL
+);
+
+
+ALTER TABLE public.cities OWNER TO dlacreme;
+
+--
+-- Name: cities_id_seq; Type: SEQUENCE; Schema: public; Owner: dlacreme
+--
+
+CREATE SEQUENCE public.cities_id_seq
+    AS integer
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+ALTER TABLE public.cities_id_seq OWNER TO dlacreme;
+
+--
+-- Name: cities_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: dlacreme
+--
+
+ALTER SEQUENCE public.cities_id_seq OWNED BY public.cities.id;
+
+
+--
+-- Name: countries; Type: TABLE; Schema: public; Owner: dlacreme
+--
+
+CREATE TABLE public.countries (
+    id character varying(3) NOT NULL,
+    language_id character varying(3) NOT NULL,
+    label character varying(255) NOT NULL
+);
+
+
+ALTER TABLE public.countries OWNER TO dlacreme;
+
+--
+-- Name: languages; Type: TABLE; Schema: public; Owner: dlacreme
+--
+
+CREATE TABLE public.languages (
+    id character varying(3) NOT NULL,
+    label character varying(55) NOT NULL,
+    label_en character varying(55) NOT NULL
+);
+
+
+ALTER TABLE public.languages OWNER TO dlacreme;
+
+--
+-- Name: locations; Type: TABLE; Schema: public; Owner: dlacreme
+--
+
+CREATE TABLE public.locations (
+    id integer NOT NULL,
+    label character varying(254) NOT NULL,
+    description character varying(254) NOT NULL,
+    lat real NOT NULL,
+    lng real NOT NULL,
+    city_id integer NOT NULL,
+    created_by_id integer NOT NULL,
+    google_id character varying(254) NOT NULL,
+    created_at timestamp without time zone NOT NULL,
+    updated_at timestamp without time zone NOT NULL
+);
+
+
+ALTER TABLE public.locations OWNER TO dlacreme;
+
+--
+-- Name: locations_id_seq; Type: SEQUENCE; Schema: public; Owner: dlacreme
+--
+
+CREATE SEQUENCE public.locations_id_seq
+    AS integer
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+ALTER TABLE public.locations_id_seq OWNER TO dlacreme;
+
+--
+-- Name: locations_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: dlacreme
+--
+
+ALTER SEQUENCE public.locations_id_seq OWNED BY public.locations.id;
+
+
+--
 -- Name: migration_versions; Type: TABLE; Schema: public; Owner: dlacreme
 --
 
@@ -171,6 +274,20 @@ ALTER SEQUENCE public.users_id_seq OWNED BY public.users.id;
 
 
 --
+-- Name: cities id; Type: DEFAULT; Schema: public; Owner: dlacreme
+--
+
+ALTER TABLE ONLY public.cities ALTER COLUMN id SET DEFAULT nextval('public.cities_id_seq'::regclass);
+
+
+--
+-- Name: locations id; Type: DEFAULT; Schema: public; Owner: dlacreme
+--
+
+ALTER TABLE ONLY public.locations ALTER COLUMN id SET DEFAULT nextval('public.locations_id_seq'::regclass);
+
+
+--
 -- Name: migration_versions id; Type: DEFAULT; Schema: public; Owner: dlacreme
 --
 
@@ -189,6 +306,38 @@ ALTER TABLE ONLY public.profiles ALTER COLUMN id SET DEFAULT nextval('public.pro
 --
 
 ALTER TABLE ONLY public.users ALTER COLUMN id SET DEFAULT nextval('public.users_id_seq'::regclass);
+
+
+--
+-- Name: cities cities_pkey; Type: CONSTRAINT; Schema: public; Owner: dlacreme
+--
+
+ALTER TABLE ONLY public.cities
+    ADD CONSTRAINT cities_pkey PRIMARY KEY (id);
+
+
+--
+-- Name: countries countries_pkey; Type: CONSTRAINT; Schema: public; Owner: dlacreme
+--
+
+ALTER TABLE ONLY public.countries
+    ADD CONSTRAINT countries_pkey PRIMARY KEY (id);
+
+
+--
+-- Name: languages languages_pkey; Type: CONSTRAINT; Schema: public; Owner: dlacreme
+--
+
+ALTER TABLE ONLY public.languages
+    ADD CONSTRAINT languages_pkey PRIMARY KEY (id);
+
+
+--
+-- Name: locations locations_pkey; Type: CONSTRAINT; Schema: public; Owner: dlacreme
+--
+
+ALTER TABLE ONLY public.locations
+    ADD CONSTRAINT locations_pkey PRIMARY KEY (id);
 
 
 --
