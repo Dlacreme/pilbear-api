@@ -1,0 +1,11 @@
+INSERT INTO languages (id, label, label_en) VALUES('FR', 'Francais', 'French');
+INSERT INTO languages (id, label, label_en) VALUES('VI', 'Viet', 'Vietnamese');
+
+INSERT INTO countries (id, label, language_id) VALUES('FR', 'France', 'FR');
+INSERT INTO countries (id, label, language_id) VALUES('VN', 'Viet Nam', 'VI');
+
+INSERT INTO cities (id, label, country_id) VALUES(1, 'Besancon', 'FR');
+INSERT INTO cities (id, label, country_id) VALUES(2, 'Paris', 'FR');
+INSERT INTO cities (id, label, country_id) VALUES(3, 'Vesoul', 'FR');
+INSERT INTO cities (id, label, country_id) VALUES(4, 'Ho Chi Minh City', 'VN');
+INSERT INTO cities (id, label, country_id) VALUES(5, 'Hanoi', 'VN');
