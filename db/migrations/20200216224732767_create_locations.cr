@@ -21,8 +21,8 @@ class CreateLocations < Jennifer::Migration::Base
     create_table :locations do |t|
       t.string :label, { :null => false }
       t.string :description, { :null => false }
-      t.float :lat, { :null => false }
-      t.float :lng, { :null => false }
+      t.double :lat, { :null => false }
+      t.double :lng, { :null => false }
       t.integer :city_id, { :null => false }
       t.integer :created_by_id, { :null => false }
       t.string :google_id, { :null => false }

@@ -10,8 +10,8 @@ module Pilbear::Models
       id: Primary32,
       label: String,
       description: String,
-      lat: Float32,
-      lng: Float32,
+      lat: Float64,
+      lng: Float64,
       city_id: Int32,
       created_by_id: Int32,
       google_id: String,
@@ -22,5 +22,6 @@ module Pilbear::Models
     belongs_to :city, City
     belongs_to :created_by, User
     has_many :events, Event
+
   end
 end

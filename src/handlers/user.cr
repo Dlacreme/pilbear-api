@@ -22,7 +22,7 @@ module Pilbear::Handlers
     def search(context)
       return ([] of String).to_json if !context.params.query["q"]
       q = "%#{context.params.query["q"]}%"
-      users_q = Models::User.all.relation(:profile).where {
+      Models::User.all.relation(:profile).where {
         sql("email ILIKE %s OR profiles.first_name ILIKE %s OR profiles.nickname ILIKE %s OR profiles.last_name ILIKE %s", [q, q, q, q])
       }.to_a.map { |u| u.print}.to_json
     end
