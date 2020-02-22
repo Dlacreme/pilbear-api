@@ -10,9 +10,10 @@ class CreateEvents < Jennifer::Migration::Base
       t.integer :capacity, { :null => false }
       t.integer :created_by_id, { :null => false }
       t.timestamp :start_date, { :null => false }
-      t.timestamp :end_date, { :null => false }
+      t.timestamp :end_date, { :null => true }
       t.bool :is_disabled, { :null => false }
       t.string :category_id, { :null => false, :size => 255 }
+      t.integer :location_id, { :null => false }
       t.timestamps
     end
   end

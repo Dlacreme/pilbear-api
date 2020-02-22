@@ -141,9 +141,10 @@ CREATE TABLE public.events (
     capacity integer NOT NULL,
     created_by_id integer NOT NULL,
     start_date timestamp without time zone NOT NULL,
-    end_date timestamp without time zone NOT NULL,
+    end_date timestamp without time zone,
     is_disabled boolean NOT NULL,
     category_id character varying(255) NOT NULL,
+    location_id integer NOT NULL,
     created_at timestamp without time zone NOT NULL,
     updated_at timestamp without time zone NOT NULL
 );

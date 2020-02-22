@@ -15,11 +15,9 @@ module Pilbear::Handlers
     end
 
     def get(context)
-      locs = Views::Location.query
-        .where { sql("locations.id = %s", [context.params.url["id"]]) }
-        .to_a
-      return not_found(context, "Location not found") if locs.size == 0
-      locs[0].to_json
+      loc = Views::Location.find?(context.params.url["id"])
+      return not_found(context, "Location not found") if loc == nil
+      loc.to_json
     end
 
     def search_city(context)
@@ -50,9 +48,7 @@ module Pilbear::Handlers
         google_id: context.params.json["google_id"],
         created_by_id: context.get("user_id"),
       })
-      Views::Location.query
-        .where { sql("locations.id = %s", [loc.id]) }
-        .to_a[0].to_json
+      Views::Location.find!(loc.id).to_json
     end
 
     def edit(context)
@@ -69,9 +65,7 @@ module Pilbear::Handlers
         loc.city_id = context.params.json["city_id"].as(Int64).to_i
       end
       loc.save
-      Views::Location.query
-        .where { sql("locations.id = %s", [loc.id]) }
-        .to_a[0].to_json
+      Views::Location.find!(loc.id).to_json
     end
 
   end

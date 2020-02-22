@@ -33,17 +33,17 @@ module Pilbear
   get "/location" { |context| locationHandler.list(context) }
   get "/location/:id" { |context| locationHandler.get(context) }
   get "/city" { |context| locationHandler.search_city(context) }
-  put "/location" { |context| locationHandler.create(context) }
-  post "/location/:id" { |context| locationHandler.edit(context) }
+  post "/location" { |context| locationHandler.create(context) }
+  put "/location/:id" { |context| locationHandler.edit(context) }
   # Event
   get "/event/mine" { |context| eventHandler.list_mine(context) }
   get "/event/user/:id" { |context| eventHandler.list_user(context) }
   get "/event" { |context| eventHandler.list_around(context) }
   get "/event/:id" { |context| eventHandler.get(context) }
-  put "/event" { |context| eventHandler.create(context) }
-  post "/event/:id" { |context| eventHandler.edit(context) }
+  post "/event" { |context| eventHandler.create(context) }
+  put "/event/:id" { |context| eventHandler.edit(context) }
   delete "/event/:id" { |context| eventHandler.disable(context) }
-  put "/event/:id/join" { |context| eventHandler.join(context) }
+  post "/event/:id/join" { |context| eventHandler.join(context) }
   delete "/event/:id/join" { |context| eventHandler.leave(context) }
 
   Kemal.run

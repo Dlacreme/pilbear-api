@@ -1,6 +1,7 @@
 require "jennifer"
 require "./location"
 require "./category"
+require "../converter"
 
 module Pilbear::Models
   class Event < Jennifer::Model::Base
@@ -9,12 +10,12 @@ module Pilbear::Models
       id: Primary32,
       label: String,
       description: String,
-      event_status: String,
       capacity: Int32,
       created_by_id: Int32,
-      start_date: Time,
-      end_date: Time,
-      category_id: Int32,
+      start_date: {type: Time},
+      end_date: {type: Time?},
+      category_id: String,
+      location_id: Int32,
       is_disabled: Bool,
       created_at: Time?,
       updated_at: Time?,

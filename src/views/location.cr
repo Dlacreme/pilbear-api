@@ -47,6 +47,20 @@ module Pilbear::Views
         )
     end
 
+    def self.find!(id) : Location
+      Views::Location.query
+        .where { sql("locations.id = %s", [id]) }
+        .to_a[0]
+    end
+
+    def self.find?(id) : Location | Nil
+      res = Views::Location.query
+        .where { sql("locations.id = %s", [id]) }
+        .to_a
+      return nil if res.size == 0
+      res[0]
+    end
+
   end
 
 end

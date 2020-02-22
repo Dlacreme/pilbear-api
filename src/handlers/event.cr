@@ -1,27 +1,67 @@
 require "./_handler"
+require "../views/event"
+require "../views/location"
 
 module Pilbear::Handlers
 
   class EventHandler < PilbearHandler
 
     def list_mine(context)
-      not_implemented(context)
+      evs = Views::Event.query
+        .where { sql("events.created_by_id = %s", [context.get("user_id").as(Int32)]) }
+        .to_a
+      with_location(evs).to_json
     end
 
     def list_user(context)
-      not_implemented(context)
+      evs = Views::Event.query
+        .where { sql("events.created_by_id = %s", [context.params.url["id"]]) }
+        .to_a
+      with_location(evs).to_json
     end
 
     def list_around(context)
-      not_implemented(context)
+      return invalid_query(context, "Please provide lat and lng parameter") unless (context.params.query.has_key?("lat") && context.params.query.has_key?("lng"))
+      perimeter = context.params.query.has_key?("perimeter") ? context.params.query["perimiter"] : 50
+      evs = Views::Event.around(Views::Event.with_location(Views::Event.query),
+        context.params.query["lat"],
+        context.params.query["lng"],
+        perimeter).to_a
+      with_location(evs).to_json
     end
 
     def get(context)
-      not_implemented(context)
+      ev = Views::Event.find?(context.params.url["id"])
+      return not_found(context, "Event not found") if ev == nil
+      ev.to_json
     end
 
     def create(context)
-      not_implemented(context)
+      missing_fields = validate_body(context, [
+        {"label", nil},
+        {"description", nil},
+        {"capacity", nil},
+        {"start_date", nil},
+        {"end_date", nil},
+        {"category_id", nil},
+        {"location_id", nil},
+      ])
+      return invalid_query(context, "Missing field(s): #{missing_fields}") if missing_fields.size > 0
+      data = context.params.json
+      return not_found(context, "Category not found") unless Models::Category.where {_id == data["category_id"].as(String)}.exists?
+      return not_found(context, "Location not found") unless Models::Location.where {_id == data["location_id"].as(Int64)}.exists?
+      ev = Models::Event.create({
+        label: data["label"].as(String),
+        description: data["label"].as(String),
+        capacity: data["capacity"].as(Int64).to_i,
+        created_by_id: context.get("user_id"),
+        start_date: Time.parse(data["start_date"].as(String), "%Y-%m-%dT%H:%M:%SZ", Time::Location::UTC),
+        category_id: data["category_id"].as(String),
+        location_id: data["location_id"].as(Int64).to_i,
+        is_disabled: false,
+      })
+      raise "Could not create event" if ev.id == nil
+      Views::Event.find!(ev.id.as(Int32)).to_json
     end
 
     def edit(context)
@@ -38,6 +78,18 @@ module Pilbear::Handlers
 
     def leave(context)
       not_implemented(context)
+    end
+
+    private def with_location(evs : Array(Views::Event)) : Array(Views::Event)
+      return evs if evs.size == 0
+      in_query = "("
+      evs.each { |e| in_query += "#{e.location_id}," }
+      in_query = in_query.chomp(',') + ')'
+      locs = Views::Location.query
+        .where { sql("locations.id IN #{in_query}") }
+        .to_a
+      evs.each { |e| e.location = locs.find { |l|  l.id == e.location_id} }
+      evs
     end
 
   end
