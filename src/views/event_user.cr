@@ -12,7 +12,7 @@ module Pilbear::Views
       id: Primary32,
       user_id: Int32,
       event_id: Int32,
-      # event_user_role: {type: String, converter: Jennifer::Model::EnumConverter},
+      event_user_role: {type: String, converter: Jennifer::Model::EnumConverter},
       created_at: Time?,
       updated_at: Time?,
     )
@@ -21,7 +21,7 @@ module Pilbear::Views
       id: Int32?,
       user_id: Int32?,
       event_id: Int32?,
-      # event_user_role: {type: String},
+      event_user_role: {type: String},
       created_at: Time?,
       updated_at: Time?,
       user: {type: User?, nilable: true },
@@ -59,7 +59,6 @@ module Pilbear::Views
       return nil if users.size == 0
       users[0]
     end
-
 
   end
 

@@ -1,5 +1,6 @@
 require "./_handler"
 require "../views/event"
+require "../views/user"
 require "../views/location"
 require "../converters"
 
@@ -11,7 +12,7 @@ module Pilbear::Handlers
       evs = Views::Event.query
         .where { sql("events.created_by_id = %s", [context.get("user_id").as(Int32)]) }
         .to_a
-      with_location(evs).to_json
+      with_members(with_location(evs)).to_json
     end
 
     def list_user(context)
@@ -123,12 +124,23 @@ module Pilbear::Handlers
     end
 
     private def with_members(evs : Array(Views::Event)) : Array(Views::Event)
-      return evs
-      # return evs if evs.size == 0
-      # in_query = ""
-      # evs.each { |e| in_query += "#{e.id}," }
+      return evs if evs.size == 0
+      in_query = ""
+      evs.each { |e| in_query += "#{e.id}," }
       # event_users = Views::EventUser.query { sql("event_id IN (#{in_query.chomp(',')})") }.to_a
-      # evs.each { |e| e.members = event_users.find { |eu| eu.event_id == e.id } }
+      event_users = Views::EventUser.all
+        .join(Views::User) { Views::EventUser._user_id == Views::User._id }
+        .where { sql("event_id IN (#{in_query.chomp(',')})") }
+        .to_a
+      in_query = ""
+      event_users.each { |eu| in_query += "#{eu.user_id}," }
+      users = Views::User.query.where { sql("users.id IN (#{in_query.chomp(',')})") }.to_a
+      event_users.each { |eu| eu.user = users.find { |u| u.id == eu.user_id } }
+      evs.each do |e|
+        eus = event_users.select { |eu|  eu.event_id == e.id }
+        e.members = eus != nil ? eus : [] of Views::EventUser
+      end
+      evs
     end
 
   end
