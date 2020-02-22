@@ -34,6 +34,10 @@ module Pilbear::Handlers
       errors
     end
 
+    def ok(context)
+      {"response": "ok"}.to_json
+    end
+
     def not_found(context, error)
       context.response.status_code = 404
       {"error": "Not found. #{error}"}.to_json

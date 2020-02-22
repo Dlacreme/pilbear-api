@@ -17,6 +17,30 @@ SET client_min_messages = warning;
 SET row_security = off;
 
 --
+-- Name: confidentiality_enum; Type: TYPE; Schema: public; Owner: dlacreme
+--
+
+CREATE TYPE public.confidentiality_enum AS ENUM (
+    'public',
+    'private'
+);
+
+
+ALTER TYPE public.confidentiality_enum OWNER TO dlacreme;
+
+--
+-- Name: event_user_role_enum; Type: TYPE; Schema: public; Owner: dlacreme
+--
+
+CREATE TYPE public.event_user_role_enum AS ENUM (
+    'admin',
+    'member'
+);
+
+
+ALTER TYPE public.event_user_role_enum OWNER TO dlacreme;
+
+--
 -- Name: gender_enum; Type: TYPE; Schema: public; Owner: dlacreme
 --
 
@@ -52,9 +76,245 @@ CREATE TYPE public.user_role_enum AS ENUM (
 
 ALTER TYPE public.user_role_enum OWNER TO dlacreme;
 
+--
+-- Name: calculate_distance(double precision, double precision, double precision, double precision, character varying); Type: FUNCTION; Schema: public; Owner: dlacreme
+--
+
+CREATE FUNCTION public.calculate_distance(lat1 double precision, lon1 double precision, lat2 double precision, lon2 double precision, units character varying) RETURNS double precision
+    LANGUAGE plpgsql
+    AS $$
+    DECLARE
+        dist float = 0;
+        radlat1 float;
+        radlat2 float;
+        theta float;
+        radtheta float;
+    BEGIN
+        -- According to the original function, I changed the OR for AND which make more sense
+        IF lat1 = lat2 AND lon1 = lon2
+            THEN RETURN dist;
+        ELSE
+            radlat1 = pi() * lat1 / 180;
+            radlat2 = pi() * lat2 / 180;
+            theta = lon1 - lon2;
+            radtheta = pi() * theta / 180;
+            dist = sin(radlat1) * sin(radlat2) + cos(radlat1) + cos(radlat2) * cos(radtheta);
+            IF dist > 1 THEN dist = 1; END IF;
+            dist = acos(dist);
+            dist = dist * 180 / pi();
+            dist = dist * 60 * 1.1515;
+            IF units = 'K' THEN dist = dist * 1.609344; END IF;
+            IF units = 'N' THEN dist = dist * 0.8684; END IF;
+            RETURN dist;
+        END IF;
+    END;
+$$;
+
+
+ALTER FUNCTION public.calculate_distance(lat1 double precision, lon1 double precision, lat2 double precision, lon2 double precision, units character varying) OWNER TO dlacreme;
+
 SET default_tablespace = '';
 
 SET default_table_access_method = heap;
+
+--
+-- Name: categories; Type: TABLE; Schema: public; Owner: dlacreme
+--
+
+CREATE TABLE public.categories (
+    id character varying(255) NOT NULL,
+    label character varying(254) NOT NULL,
+    is_disabled boolean DEFAULT false NOT NULL
+);
+
+
+ALTER TABLE public.categories OWNER TO dlacreme;
+
+--
+-- Name: cities; Type: TABLE; Schema: public; Owner: dlacreme
+--
+
+CREATE TABLE public.cities (
+    id integer NOT NULL,
+    label character varying(255) NOT NULL,
+    country_id character varying(3) NOT NULL
+);
+
+
+ALTER TABLE public.cities OWNER TO dlacreme;
+
+--
+-- Name: cities_id_seq; Type: SEQUENCE; Schema: public; Owner: dlacreme
+--
+
+CREATE SEQUENCE public.cities_id_seq
+    AS integer
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+ALTER TABLE public.cities_id_seq OWNER TO dlacreme;
+
+--
+-- Name: cities_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: dlacreme
+--
+
+ALTER SEQUENCE public.cities_id_seq OWNED BY public.cities.id;
+
+
+--
+-- Name: countries; Type: TABLE; Schema: public; Owner: dlacreme
+--
+
+CREATE TABLE public.countries (
+    id character varying(3) NOT NULL,
+    language_id character varying(3) NOT NULL,
+    label character varying(255) NOT NULL
+);
+
+
+ALTER TABLE public.countries OWNER TO dlacreme;
+
+--
+-- Name: event_users; Type: TABLE; Schema: public; Owner: dlacreme
+--
+
+CREATE TABLE public.event_users (
+    id integer NOT NULL,
+    user_id integer NOT NULL,
+    event_id integer NOT NULL,
+    event_user_role public.event_user_role_enum NOT NULL,
+    created_at timestamp without time zone NOT NULL,
+    updated_at timestamp without time zone NOT NULL
+);
+
+
+ALTER TABLE public.event_users OWNER TO dlacreme;
+
+--
+-- Name: event_users_id_seq; Type: SEQUENCE; Schema: public; Owner: dlacreme
+--
+
+CREATE SEQUENCE public.event_users_id_seq
+    AS integer
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+ALTER TABLE public.event_users_id_seq OWNER TO dlacreme;
+
+--
+-- Name: event_users_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: dlacreme
+--
+
+ALTER SEQUENCE public.event_users_id_seq OWNED BY public.event_users.id;
+
+
+--
+-- Name: events; Type: TABLE; Schema: public; Owner: dlacreme
+--
+
+CREATE TABLE public.events (
+    id integer NOT NULL,
+    label character varying(255) NOT NULL,
+    description character varying(254),
+    confidentiality public.confidentiality_enum,
+    capacity integer NOT NULL,
+    created_by_id integer NOT NULL,
+    start_date timestamp without time zone NOT NULL,
+    end_date timestamp without time zone,
+    is_disabled boolean NOT NULL,
+    category_id character varying(255) NOT NULL,
+    location_id integer NOT NULL,
+    created_at timestamp without time zone NOT NULL,
+    updated_at timestamp without time zone NOT NULL
+);
+
+
+ALTER TABLE public.events OWNER TO dlacreme;
+
+--
+-- Name: events_id_seq; Type: SEQUENCE; Schema: public; Owner: dlacreme
+--
+
+CREATE SEQUENCE public.events_id_seq
+    AS integer
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+ALTER TABLE public.events_id_seq OWNER TO dlacreme;
+
+--
+-- Name: events_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: dlacreme
+--
+
+ALTER SEQUENCE public.events_id_seq OWNED BY public.events.id;
+
+
+--
+-- Name: languages; Type: TABLE; Schema: public; Owner: dlacreme
+--
+
+CREATE TABLE public.languages (
+    id character varying(3) NOT NULL,
+    label character varying(55) NOT NULL,
+    label_en character varying(55) NOT NULL
+);
+
+
+ALTER TABLE public.languages OWNER TO dlacreme;
+
+--
+-- Name: locations; Type: TABLE; Schema: public; Owner: dlacreme
+--
+
+CREATE TABLE public.locations (
+    id integer NOT NULL,
+    label character varying(254) NOT NULL,
+    description character varying(254) NOT NULL,
+    lat double precision NOT NULL,
+    lng double precision NOT NULL,
+    city_id integer NOT NULL,
+    created_by_id integer NOT NULL,
+    google_id character varying(254) NOT NULL,
+    created_at timestamp without time zone NOT NULL,
+    updated_at timestamp without time zone NOT NULL
+);
+
+
+ALTER TABLE public.locations OWNER TO dlacreme;
+
+--
+-- Name: locations_id_seq; Type: SEQUENCE; Schema: public; Owner: dlacreme
+--
+
+CREATE SEQUENCE public.locations_id_seq
+    AS integer
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+ALTER TABLE public.locations_id_seq OWNER TO dlacreme;
+
+--
+-- Name: locations_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: dlacreme
+--
+
+ALTER SEQUENCE public.locations_id_seq OWNED BY public.locations.id;
+
 
 --
 -- Name: migration_versions; Type: TABLE; Schema: public; Owner: dlacreme
@@ -171,6 +431,34 @@ ALTER SEQUENCE public.users_id_seq OWNED BY public.users.id;
 
 
 --
+-- Name: cities id; Type: DEFAULT; Schema: public; Owner: dlacreme
+--
+
+ALTER TABLE ONLY public.cities ALTER COLUMN id SET DEFAULT nextval('public.cities_id_seq'::regclass);
+
+
+--
+-- Name: event_users id; Type: DEFAULT; Schema: public; Owner: dlacreme
+--
+
+ALTER TABLE ONLY public.event_users ALTER COLUMN id SET DEFAULT nextval('public.event_users_id_seq'::regclass);
+
+
+--
+-- Name: events id; Type: DEFAULT; Schema: public; Owner: dlacreme
+--
+
+ALTER TABLE ONLY public.events ALTER COLUMN id SET DEFAULT nextval('public.events_id_seq'::regclass);
+
+
+--
+-- Name: locations id; Type: DEFAULT; Schema: public; Owner: dlacreme
+--
+
+ALTER TABLE ONLY public.locations ALTER COLUMN id SET DEFAULT nextval('public.locations_id_seq'::regclass);
+
+
+--
 -- Name: migration_versions id; Type: DEFAULT; Schema: public; Owner: dlacreme
 --
 
@@ -189,6 +477,62 @@ ALTER TABLE ONLY public.profiles ALTER COLUMN id SET DEFAULT nextval('public.pro
 --
 
 ALTER TABLE ONLY public.users ALTER COLUMN id SET DEFAULT nextval('public.users_id_seq'::regclass);
+
+
+--
+-- Name: categories categories_pkey; Type: CONSTRAINT; Schema: public; Owner: dlacreme
+--
+
+ALTER TABLE ONLY public.categories
+    ADD CONSTRAINT categories_pkey PRIMARY KEY (id);
+
+
+--
+-- Name: cities cities_pkey; Type: CONSTRAINT; Schema: public; Owner: dlacreme
+--
+
+ALTER TABLE ONLY public.cities
+    ADD CONSTRAINT cities_pkey PRIMARY KEY (id);
+
+
+--
+-- Name: countries countries_pkey; Type: CONSTRAINT; Schema: public; Owner: dlacreme
+--
+
+ALTER TABLE ONLY public.countries
+    ADD CONSTRAINT countries_pkey PRIMARY KEY (id);
+
+
+--
+-- Name: event_users event_users_pkey; Type: CONSTRAINT; Schema: public; Owner: dlacreme
+--
+
+ALTER TABLE ONLY public.event_users
+    ADD CONSTRAINT event_users_pkey PRIMARY KEY (id);
+
+
+--
+-- Name: events events_pkey; Type: CONSTRAINT; Schema: public; Owner: dlacreme
+--
+
+ALTER TABLE ONLY public.events
+    ADD CONSTRAINT events_pkey PRIMARY KEY (id);
+
+
+--
+-- Name: languages languages_pkey; Type: CONSTRAINT; Schema: public; Owner: dlacreme
+--
+
+ALTER TABLE ONLY public.languages
+    ADD CONSTRAINT languages_pkey PRIMARY KEY (id);
+
+
+--
+-- Name: locations locations_pkey; Type: CONSTRAINT; Schema: public; Owner: dlacreme
+--
+
+ALTER TABLE ONLY public.locations
+    ADD CONSTRAINT locations_pkey PRIMARY KEY (id);
 
 
 --

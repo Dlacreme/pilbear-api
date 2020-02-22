@@ -15,6 +15,16 @@ module Pilbear::Models
       gender: {type: String, null: true, default: nil, converter: Jennifer::Model::EnumConverter}
     )
 
+    JSON.mapping(
+      id: Int32?,
+      nickname: String?,
+      first_name: String?,
+      last_name: String?,
+      picture_url: String?,
+      birthdate: Time?,
+      gender: String?,
+    )
+
     has_one :user, User
 
   end
