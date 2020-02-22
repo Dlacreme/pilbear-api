@@ -1,7 +1,9 @@
 require "./location"
+require "./event_user"
 require "../models/user"
 require "../models/event"
 require "../models/location"
+require "../models/event_user"
 
 module Pilbear::Views
 
@@ -33,7 +35,8 @@ module Pilbear::Views
       location_id: Int32?,
       confidentiality: String?,
       is_disabled: Bool?,
-      location: {type: Location, nilable: true}
+      location: {type: Location, nilable: true},
+      members: {type: Array(EventUser), nilable: true}
     )
 
     def self.query(show_all : Bool = false) : Jennifer::QueryBuilder::ModelQuery(Event)

@@ -3,6 +3,7 @@ require "./_handler"
 require "../const"
 require "../models/user"
 require "../services/jwt"
+require "../views/user"
 
 #
 module Pilbear::Handlers
@@ -10,21 +11,21 @@ module Pilbear::Handlers
   class UserHandler < PilbearHandler
 
     def get_me(context)
-      current_user!(context).print.to_json
+      Views::User.find!(context.get("user_id").as(Int32)).to_json
     end
 
     def get(context)
-      u = Models::User.find(context.params.url["id"])
+      u = Views::User.find?(context.params.url["id"])
       return not_found(context, "User not found") if u == nil
-      u.as(Models::User).print.to_json
+      u.to_json
     end
 
     def search(context)
       return ([] of String).to_json if !context.params.query["q"]
       q = "%#{context.params.query["q"]}%"
-      Models::User.all.relation(:profile).where {
-        sql("email ILIKE %s OR profiles.first_name ILIKE %s OR profiles.nickname ILIKE %s OR profiles.last_name ILIKE %s", [q, q, q, q])
-      }.to_a.map { |u| u.print}.to_json
+      Views::User.query.where {
+        sql("users.email ILIKE %s OR profiles.first_name ILIKE %s OR profiles.nickname ILIKE %s OR profiles.last_name ILIKE %s", [q, q, q, q])
+      }.to_a.to_json
     end
 
     def login(context)

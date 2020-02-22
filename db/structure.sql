@@ -29,6 +29,18 @@ CREATE TYPE public.confidentiality_enum AS ENUM (
 ALTER TYPE public.confidentiality_enum OWNER TO dlacreme;
 
 --
+-- Name: event_user_role_enum; Type: TYPE; Schema: public; Owner: dlacreme
+--
+
+CREATE TYPE public.event_user_role_enum AS ENUM (
+    'admin',
+    'member'
+);
+
+
+ALTER TYPE public.event_user_role_enum OWNER TO dlacreme;
+
+--
 -- Name: gender_enum; Type: TYPE; Schema: public; Owner: dlacreme
 --
 
@@ -63,6 +75,43 @@ CREATE TYPE public.user_role_enum AS ENUM (
 
 
 ALTER TYPE public.user_role_enum OWNER TO dlacreme;
+
+--
+-- Name: calculate_distance(double precision, double precision, double precision, double precision, character varying); Type: FUNCTION; Schema: public; Owner: dlacreme
+--
+
+CREATE FUNCTION public.calculate_distance(lat1 double precision, lon1 double precision, lat2 double precision, lon2 double precision, units character varying) RETURNS double precision
+    LANGUAGE plpgsql
+    AS $$
+    DECLARE
+        dist float = 0;
+        radlat1 float;
+        radlat2 float;
+        theta float;
+        radtheta float;
+    BEGIN
+        -- According to the original function, I changed the OR for AND which make more sense
+        IF lat1 = lat2 AND lon1 = lon2
+            THEN RETURN dist;
+        ELSE
+            radlat1 = pi() * lat1 / 180;
+            radlat2 = pi() * lat2 / 180;
+            theta = lon1 - lon2;
+            radtheta = pi() * theta / 180;
+            dist = sin(radlat1) * sin(radlat2) + cos(radlat1) + cos(radlat2) * cos(radtheta);
+            IF dist > 1 THEN dist = 1; END IF;
+            dist = acos(dist);
+            dist = dist * 180 / pi();
+            dist = dist * 60 * 1.1515;
+            IF units = 'K' THEN dist = dist * 1.609344; END IF;
+            IF units = 'N' THEN dist = dist * 0.8684; END IF;
+            RETURN dist;
+        END IF;
+    END;
+$$;
+
+
+ALTER FUNCTION public.calculate_distance(lat1 double precision, lon1 double precision, lat2 double precision, lon2 double precision, units character varying) OWNER TO dlacreme;
 
 SET default_tablespace = '';
 
@@ -128,6 +177,44 @@ CREATE TABLE public.countries (
 
 
 ALTER TABLE public.countries OWNER TO dlacreme;
+
+--
+-- Name: event_users; Type: TABLE; Schema: public; Owner: dlacreme
+--
+
+CREATE TABLE public.event_users (
+    id integer NOT NULL,
+    user_id integer NOT NULL,
+    event_id integer NOT NULL,
+    event_user_role public.event_user_role_enum NOT NULL,
+    created_at timestamp without time zone NOT NULL,
+    updated_at timestamp without time zone NOT NULL
+);
+
+
+ALTER TABLE public.event_users OWNER TO dlacreme;
+
+--
+-- Name: event_users_id_seq; Type: SEQUENCE; Schema: public; Owner: dlacreme
+--
+
+CREATE SEQUENCE public.event_users_id_seq
+    AS integer
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+ALTER TABLE public.event_users_id_seq OWNER TO dlacreme;
+
+--
+-- Name: event_users_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: dlacreme
+--
+
+ALTER SEQUENCE public.event_users_id_seq OWNED BY public.event_users.id;
+
 
 --
 -- Name: events; Type: TABLE; Schema: public; Owner: dlacreme
@@ -351,6 +438,13 @@ ALTER TABLE ONLY public.cities ALTER COLUMN id SET DEFAULT nextval('public.citie
 
 
 --
+-- Name: event_users id; Type: DEFAULT; Schema: public; Owner: dlacreme
+--
+
+ALTER TABLE ONLY public.event_users ALTER COLUMN id SET DEFAULT nextval('public.event_users_id_seq'::regclass);
+
+
+--
 -- Name: events id; Type: DEFAULT; Schema: public; Owner: dlacreme
 --
 
@@ -407,6 +501,14 @@ ALTER TABLE ONLY public.cities
 
 ALTER TABLE ONLY public.countries
     ADD CONSTRAINT countries_pkey PRIMARY KEY (id);
+
+
+--
+-- Name: event_users event_users_pkey; Type: CONSTRAINT; Schema: public; Owner: dlacreme
+--
+
+ALTER TABLE ONLY public.event_users
+    ADD CONSTRAINT event_users_pkey PRIMARY KEY (id);
 
 
 --

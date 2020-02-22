@@ -45,6 +45,7 @@ module Pilbear::Handlers
         {"start_date", nil},
         {"end_date", nil},
         {"category_id", nil},
+        {"confidentiality", nil},
         {"location_id", nil},
       ])
       return invalid_query(context, "Missing field(s): #{missing_fields}") if missing_fields.size > 0
@@ -63,6 +64,7 @@ module Pilbear::Handlers
         confidentiality: data["confidentiality"].as(String),
         is_disabled: false,
       })
+      ev.join(current_user!(context), "admin")
       raise "Could not create event" if ev.id == nil
       Views::Event.find!(ev.id.as(Int32)).to_json
     end
@@ -93,23 +95,40 @@ module Pilbear::Handlers
     end
 
     def join(context)
-      not_implemented(context)
+      evs = Models::Event.all.where { sql("id = %s", [context.params.url["id"]]) }.to_a
+      return not_found(context, "Event not found") if evs.size == 0
+      ev = evs[0]
+      return invalid_query(context, "Event is full") if ev.full?
+      ev.join(current_user!(context))
+      ok(context)
     end
 
     def leave(context)
-      not_implemented(context)
+      evs = Models::Event.all.where { sql("id = %s", [context.params.url["id"]]) }.to_a
+      return not_found(context, "Event not found") if evs.size == 0
+      ev = evs[0]
+      ev.leave(current_user!(context))
+      ok(context)
     end
 
     private def with_location(evs : Array(Views::Event)) : Array(Views::Event)
       return evs if evs.size == 0
-      in_query = "("
+      in_query = ""
       evs.each { |e| in_query += "#{e.location_id}," }
-      in_query = in_query.chomp(',') + ')'
       locs = Views::Location.query
-        .where { sql("locations.id IN #{in_query}") }
+        .where { sql("locations.id IN (#{in_query.chomp(',')})") }
         .to_a
       evs.each { |e| e.location = locs.find { |l|  l.id == e.location_id} }
       evs
+    end
+
+    private def with_members(evs : Array(Views::Event)) : Array(Views::Event)
+      return evs
+      # return evs if evs.size == 0
+      # in_query = ""
+      # evs.each { |e| in_query += "#{e.id}," }
+      # event_users = Views::EventUser.query { sql("event_id IN (#{in_query.chomp(',')})") }.to_a
+      # evs.each { |e| e.members = event_users.find { |eu| eu.event_id == e.id } }
     end
 
   end
