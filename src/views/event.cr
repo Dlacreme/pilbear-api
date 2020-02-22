@@ -17,6 +17,7 @@ module Pilbear::Views
       end_date: Time?,
       category_id: String,
       location_id: Int32,
+      confidentiality: {type: String, converter: Jennifer::Model::EnumConverter },
       is_disabled: Bool,
     )
 
@@ -30,6 +31,7 @@ module Pilbear::Views
       end_date: Time?,
       category_id: String?,
       location_id: Int32?,
+      confidentiality: String?,
       is_disabled: Bool?,
       location: {type: Location, nilable: true}
     )
@@ -46,6 +48,7 @@ module Pilbear::Views
           "events.category_id as category_id," \
           "events.location_id as location_id," \
           "events.is_disabled as is_disabled," \
+          "events.confidentiality as confidentiality," \
           "events.created_by_id as created_by_id"
         )
       show_all ? q : active_only(q)

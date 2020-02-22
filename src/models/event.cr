@@ -1,7 +1,6 @@
 require "jennifer"
 require "./location"
 require "./category"
-require "../converter"
 
 module Pilbear::Models
   class Event < Jennifer::Model::Base
@@ -10,6 +9,7 @@ module Pilbear::Models
       id: Primary32,
       label: String,
       description: String,
+      confidentiality: {type: String, converter: Jennifer::Model::EnumConverter },
       capacity: Int32,
       created_by_id: Int32,
       start_date: {type: Time},

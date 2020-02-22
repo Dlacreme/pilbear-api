@@ -1,6 +1,7 @@
 require "./_handler"
 require "../views/event"
 require "../views/location"
+require "../converters"
 
 module Pilbear::Handlers
 
@@ -55,9 +56,11 @@ module Pilbear::Handlers
         description: data["label"].as(String),
         capacity: data["capacity"].as(Int64).to_i,
         created_by_id: context.get("user_id"),
-        start_date: Time.parse(data["start_date"].as(String), "%Y-%m-%dT%H:%M:%SZ", Time::Location::UTC),
+        start_date: Converters::Datetime.from_string(data["start_date"].as(String)),
+        end_date: data.has_key?("end_date") ? Converters::Datetime.from_string(data["end_date"].as(String)) : nil,
         category_id: data["category_id"].as(String),
         location_id: data["location_id"].as(Int64).to_i,
+        confidentiality: data["confidentiality"].as(String),
         is_disabled: false,
       })
       raise "Could not create event" if ev.id == nil
@@ -65,11 +68,28 @@ module Pilbear::Handlers
     end
 
     def edit(context)
-      not_implemented(context)
+      evs = Models::Event.all.where { _id == context.params.url["id"] }.to_a
+      return not_found(context, "Event not found") if evs.size == 0
+      ev = evs[0]
+      d = context.params.json
+      ev.label = d["label"].as(String) if d.has_key?("label")
+      ev.description = d["description"].as(String) if d.has_key?("description")
+      ev.capacity = d["capacity"].as(Int64).to_i if d.has_key?("capacity")
+      ev.start_date = Converters::Datetime.from_string(d["start_date"].as(String)) if d.has_key?("start_date")
+      ev.end_date = Converters::Datetime.from_string(d["end_date"].as(String)) if d.has_key?("end_date")
+      ev.category_id = d["category_id"].as(String) if d.has_key?("category_id")
+      ev.location_id = d["location_id"].as(Int64).to_i if d.has_key?("location_id")
+      ev.confidentiality = d["confidentiality"].as(String) if d.has_key?("confidentiality")
+      ev.save
+      Views::Event.find?(context.params.url["id"]).to_json
     end
 
     def disable(context)
-      not_implemented(context)
+      evs = Models::Event.all.where { _id == context.params.url["id"] }.to_a
+      return not_found(context, "Event not found") if evs.size == 0
+      evs[0].is_disabled = true
+      evs[0].save
+      ok(context)
     end
 
     def join(context)
