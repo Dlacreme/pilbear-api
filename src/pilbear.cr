@@ -4,6 +4,12 @@ require "./setup"
 require "./handlers/*"
 require "../config/config"
 
+class HTTP::Server::Context
+  def current_user_id : Int32
+    self.get("user_id").as(Int32)
+  end
+end
+
 module Pilbear
   VERSION = "0.0.1"
 
@@ -47,5 +53,4 @@ module Pilbear
   delete "/event/:id/join" { |context| eventHandler.leave(context) }
 
   Kemal.run
-
 end

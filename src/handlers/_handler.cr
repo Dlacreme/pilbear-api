@@ -3,9 +3,7 @@ require "../services/validator"
 require "../models/user"
 
 module Pilbear::Handlers
-
   class PilbearHandler
-
     @@validator = Services::Validator.new
 
     def current_user?(context) : Models::User?
@@ -34,6 +32,11 @@ module Pilbear::Handlers
       errors
     end
 
+    macro validate_body!(fields)
+      missing_fields = validate_body(context, {{fields}})
+      fail_query "Missing field(s): #{missing_fields}" if missing_fields.size > 0
+    end
+
     def ok(context)
       {"response": "ok"}.to_json
     end
@@ -48,11 +51,14 @@ module Pilbear::Handlers
       {"error": "Invalid query. #{error}"}.to_json
     end
 
+    macro fail_query(error)
+      context.response.status_code = 400
+      return {"error": "Invalid query." + {{error}}}.to_json
+    end
+
     def not_implemented(context)
       context.response.status_code = 521
       {"error": "Not implemented"}.to_json
     end
-
   end
-
 end
