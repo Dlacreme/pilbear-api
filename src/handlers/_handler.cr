@@ -65,5 +65,9 @@ module Pilbear::Handlers
       context.response.status_code = 521
       {"error": "Not implemented"}.to_json
     end
+
+    macro json_params
+      context.params.json
+    end
   end
 end
