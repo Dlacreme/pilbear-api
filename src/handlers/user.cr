@@ -37,7 +37,7 @@ module Pilbear::Handlers
       password = Crypto::Bcrypt::Password.new(user.password.not_nil!)
       not_found!("Invalid credentials") if password.verify(json_params["password"].as(String))
       data = user.print
-      data["token"] = Services::JWT.encode(user.id.not_nil!)
+      data["token"] = user.jwt_encode
       data.to_json
     end
 
