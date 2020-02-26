@@ -8,12 +8,12 @@ require "../views/user"
 module Pilbear::Handlers
   class UserHandler < PilbearHandler
     def get_me(context)
-      Views::User.find!(context.get("user_id").as(Int32)).to_json
+      Views::User.find!(context.current_user_id).to_json
     end
 
     def get(context)
       u = Views::User.find?(context.params.url["id"])
-      return not_found(context, "User not found") if u == nil
+      not_found!("User not found") if u.nil?
       u.to_json
     end
 
@@ -26,19 +26,18 @@ module Pilbear::Handlers
     end
 
     def login(context)
-      missing_fields = validate_body(context, [
+      validate_body!([
         {"email", Const::Regex::EMAIL},
         {"password", nil},
       ])
-      return invalid_query(context, "Missing field(s): #{missing_fields}") if missing_fields.size > 0
-      users = Models::User.where { sql("email like '#{context.params.json["email"].as(String)}'") }.to_a
-      return not_found(context, "Invalid credentials") if users.size == 0
-      user = users[0]
-      return invalid_query(context, "Provider account") if user.password == nil
-      password = Crypto::Bcrypt::Password.new(user.password.as(String))
-      return not_found(context, "Invalid credentials") if password.verify(context.params.json["password"].as(String))
+      users = Models::User.where { sql("email like '#{json_params["email"].not_nil!}'") }.to_a
+      not_found!("Invalid credentials") if users.empty?
+      user = users.first
+      fail_query!("Provider account") if user.password.nil?
+      password = Crypto::Bcrypt::Password.new(user.password.not_nil!)
+      not_found!("Invalid credentials") if password.verify(json_params["password"].as(String))
       data = user.print
-      data["token"] = Services::JWT.encode(user.id.as(Int32))
+      data["token"] = user.jwt_encode
       data.to_json
     end
 
@@ -49,11 +48,11 @@ module Pilbear::Handlers
       ])
       begin
         profile = Models::Profile.create
-        user = Models::User.create(context.params.json["email"],
-          password: context.params.json["password"],
+        user = Models::User.create(email: json_params["email"],
+          password: json_params["password"],
           profile_id: profile.id)
       rescue ex
-        fail_query "email already existing" if ex.to_s.match(/user_email_index/)
+        fail_query! "email already existing" if ex.to_s.includes?("user_email_index")
         raise ex
       end
       login(context)

@@ -2,7 +2,6 @@ require "jennifer"
 require "./profile"
 
 module Pilbear::Models
-
   class User < Jennifer::Model::Base
     with_timestamps
     mapping(
@@ -19,20 +18,22 @@ module Pilbear::Models
 
     belongs_to :profile, Profile
 
+    def jwt_encode
+      Services::JWT.encode(self.id.not_nil!)
+    end
+
     def print
       p : Profile = (self.profile != nil ? self.profile : Models::Profile.find!(self.profile_id)).as(Profile)
       return {
-        "email" => self.email,
-        "role" => self.user_role,
-        "nickname" => p.nickname,
-        "first_name" => p.first_name,
-        "last_name" => p.last_name,
+        "email"       => self.email,
+        "role"        => self.user_role,
+        "nickname"    => p.nickname,
+        "first_name"  => p.first_name,
+        "last_name"   => p.last_name,
         "picture_url" => p.picture_url,
-        "birthdate" => p.birthdate,
-        "gender" => p.gender
+        "birthdate"   => p.birthdate,
+        "gender"      => p.gender,
       }
     end
-
   end
-
 end

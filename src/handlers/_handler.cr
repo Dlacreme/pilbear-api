@@ -34,7 +34,7 @@ module Pilbear::Handlers
 
     macro validate_body!(fields)
       missing_fields = validate_body(context, {{fields}})
-      fail_query "Missing field(s): #{missing_fields}" if missing_fields.size > 0
+      fail_query! "Missing field(s): #{missing_fields}" if missing_fields.size > 0
     end
 
     def ok(context)
@@ -46,12 +46,17 @@ module Pilbear::Handlers
       {"error": "Not found. #{error}"}.to_json
     end
 
+    macro not_found!(error)
+      context.response.status_code = 404
+      return {"error": "Not found. " + {{error}}}.to_json
+    end
+
     def invalid_query(context, error)
       context.response.status_code = 400
       {"error": "Invalid query. #{error}"}.to_json
     end
 
-    macro fail_query(error)
+    macro fail_query!(error)
       context.response.status_code = 400
       return {"error": "Invalid query." + {{error}}}.to_json
     end
@@ -59,6 +64,10 @@ module Pilbear::Handlers
     def not_implemented(context)
       context.response.status_code = 521
       {"error": "Not implemented"}.to_json
+    end
+
+    macro json_params
+      context.params.json
     end
   end
 end
