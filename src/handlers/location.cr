@@ -9,7 +9,7 @@ module Pilbear::Handlers
     def list(context)
       puts(typeof(context.params.json))
       Views::Location.query
-        .where { sql("locations.created_by_id = %s", [context.current_user_id]) }
+        .where { sql("locations.created_by_id = %s", [context.get("user_id")]) }
         .to_a.to_json
     end
 
@@ -28,42 +28,25 @@ module Pilbear::Handlers
     end
 
     def create(context)
-      missing_fields = validate_body(context, [
-        {"label", nil},
-        {"description", nil},
-        {"lat", nil},
-        {"lng", nil},
-        {"city_id", nil},
-        {"google_id", nil},
-      ])
-      return invalid_query(context, "Missing field(s): #{missing_fields}") if missing_fields.size > 0
-      return not_found(context, "City not found") unless Models::City.where { _id == context.params.json["city_id"].as(Int64) }.exists?
-      loc = Models::Location.create({
-        label:         context.params.json["label"],
-        description:   context.params.json["description"],
-        lat:           context.params.json["lat"].as(Float64),
-        lng:           context.params.json["lng"].as(Float64),
-        city_id:       context.params.json["city_id"].as(Int64).to_i,
-        google_id:     context.params.json["google_id"],
-        created_by_id: context.get("user_id"),
-      })
-      Views::Location.find!(loc.id).to_json
+      begin
+        loc = Models::Location.from_json(body.to_json)
+        loc.save
+        Views::Location.find!(loc.id).to_json
+      rescue ex
+        return fail_query(context, ex)
+      end
     end
 
     def edit(context)
-      locs = Models::Location.all.where { sql("locations.id = %s", [context.params.url["id"]]) }.to_a
-      return not_found(context, "Location not found") if locs.size == 0
-      loc = locs[0]
-      loc.label = context.params.json["label"].as(String) if context.params.json.has_key?("label")
-      loc.description = context.params.json["description"].as(String) if context.params.json.has_key?("description")
-      loc.lat = context.params.json["lat"].as(Float64) if context.params.json.has_key?("lat")
-      loc.lng = context.params.json["lng"].as(Float64) if context.params.json.has_key?("lng")
-      loc.google_id = context.params.json["google_id"].as(String) if context.params.json.has_key?("google_id")
-      if context.params.json["city_id"]
-        return not_found(context, "City not found") unless Models::City.where { _id == context.params.json["city_id"].as(Int64) }.exists?
-        loc.city_id = context.params.json["city_id"].as(Int64).to_i
+      loc = Models::Location.all.where { sql("locations.id = %s", [context.params.url["id"]]) }.to_a.first?
+      return not_found(context, "Location not found") if loc.nil?
+      begin
+        loc.update_from_hash(body)
+        puts loc
+        loc.save
+      rescue ex
+        return fail_query(context, ex)
       end
-      loc.save
       Views::Location.find!(loc.id).to_json
     end
   end

@@ -51,9 +51,21 @@ module Pilbear::Handlers
       return {"error": "Not found. " + {{error}}}.to_json
     end
 
-    def invalid_query(context, error)
+    def fail_query(context, error : Exception)
+      context.response.status_code = 400
+      msg = error.message || ""
+      msg = "Relationship not found" if msg.includes?("out of bounds")
+      {"error": msg}.to_json
+    end
+
+    def invalid_query(context, error : String)
       context.response.status_code = 400
       {"error": "Invalid query. #{error}"}.to_json
+    end
+
+    macro invalid_query!(error)
+      context.response.status_code = 400
+      return {"error": {{error}}.nil? ? "Invalid query." : {{error}} }.to_json
     end
 
     macro fail_query!(error)
@@ -66,7 +78,7 @@ module Pilbear::Handlers
       {"error": "Not implemented"}.to_json
     end
 
-    macro json_params
+    macro body
       context.params.json
     end
   end

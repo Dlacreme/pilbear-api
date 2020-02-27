@@ -2,6 +2,7 @@ require "kemal"
 require "kemal-watcher"
 require "./setup"
 require "./handlers/*"
+require "./models/*"
 require "../config/config"
 
 class HTTP::Server::Context
