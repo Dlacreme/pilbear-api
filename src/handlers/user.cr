@@ -30,12 +30,12 @@ module Pilbear::Handlers
         {"email", Const::Regex::EMAIL},
         {"password", nil},
       ])
-      users = Models::User.where { sql("email like '#{json_params["email"].not_nil!}'") }.to_a
+      users = Models::User.where { sql("email like '#{body["email"].not_nil!}'") }.to_a
       not_found!("Invalid credentials") if users.empty?
       user = users.first
       fail_query!("Provider account") if user.password.nil?
       password = Crypto::Bcrypt::Password.new(user.password.not_nil!)
-      not_found!("Invalid credentials") if password.verify(json_params["password"].as(String))
+      not_found!("Invalid credentials") if password.verify(body["password"].as(String))
       data = user.print
       data["token"] = user.jwt_encode
       data.to_json
@@ -48,8 +48,8 @@ module Pilbear::Handlers
       ])
       begin
         profile = Models::Profile.create
-        user = Models::User.create(email: json_params["email"],
-          password: json_params["password"],
+        user = Models::User.create(email: body["email"],
+          password: body["password"],
           profile_id: profile.id)
       rescue ex
         fail_query! "email already existing" if ex.to_s.includes?("user_email_index")

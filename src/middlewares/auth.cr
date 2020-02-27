@@ -11,6 +11,9 @@ module Pilbear::Middlewares
       user_id = Services::JWT.decode(context.request.headers["Authorization"].split(' ')[1])
       return call_next context if user_id.nil?
       context.set("user_id", user_id)
+      if !context.params.json.nil?
+        context.params.json["created_by_id"] = user_id.as(Int64)
+      end
       call_next context
     end
   end

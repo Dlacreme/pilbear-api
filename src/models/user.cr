@@ -19,7 +19,7 @@ module Pilbear::Models
     belongs_to :profile, Profile
 
     def jwt_encode
-      Services::JWT.encode(self.id.not_nil!)
+      Services::JWT.encode(self.id.not_nil!.to_i64)
     end
 
     def print
