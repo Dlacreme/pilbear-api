@@ -1,5 +1,4 @@
 require "kemal"
-require "kemal-watcher"
 require "./setup"
 require "./handlers/*"
 require "./models/*"
