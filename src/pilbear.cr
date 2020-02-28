@@ -53,5 +53,15 @@ module Pilbear
   post "/event/:id/join" { |context| eventHandler.join(context) }
   delete "/event/:id/join" { |context| eventHandler.leave(context) }
 
-  Kemal.run
+  Kemal.run do |config|
+    server = config.server.not_nil!
+
+    port = 3000
+    OptionParser.parse do |opts|
+      opts.on("-p PORT", "--port PORT", "define port to run server") do |opt|
+        port = opt.to_i
+      end
+    end
+    server.bind_tcp "0.0.0.0", port
+  end
 end

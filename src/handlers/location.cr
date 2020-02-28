@@ -43,7 +43,7 @@ module Pilbear::Handlers
       begin
         loc.update_from_hash(body)
         puts loc
-        loc.save
+        loc.save!
       rescue ex
         return fail_query(context, ex)
       end
