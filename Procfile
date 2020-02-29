@@ -1,0 +1,1 @@
+web: crystal sam.cr -- db:setup && psql postgres://vmjhveqwiimzdg:bf44f76479d387ff9861b04b41d4039c8c01dfacbfea9f37ebf3b5f8e9b499cf@ec2-18-213-176-229.compute-1.amazonaws.com:5432/dcp5nhiees2bqj < ./db/search_coord.psql

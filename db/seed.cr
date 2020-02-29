@@ -1,10 +1,24 @@
-require "../src/models/profile"
-require "../src/models/user"
+require "../src/models/*"
 
 def user
   p = Pilbear::Models::Profile.create({nickname: "Dlacreme", first_name: "Mathieu", last_name: "Delacroix"})
   Pilbear::Models::User.create({email: "mathieu@pilbear.com", password: "92dcd49d91c0ddf1c77443039371aad3", profile_id: p.id, user_role: "admin"})
   puts "User mathie@pilbear.com with password `toto42` created."
+end
+
+def language_country_city
+  Pilbear::Models::Language.create({id: "EN", label: "English", label_en: "English"})
+  Pilbear::Models::Language.create({id: "FR", label: "Francais", label_en: "French"})
+  Pilbear::Models::Language.create({id: "VI", label: "Viet", label_en: "Viet"})
+
+  Pilbear::Models::Country.create({id: "FR", label: "France", language_id: "FR"})
+  Pilbear::Models::Country.create({id: "VN", label: "Viet Nam", language_id: "VI"})
+
+  Pilbear::Models::City.create({label: "Besancon", country_id: "FR"})
+  Pilbear::Models::City.create({label: "Paris", country_id: "FR"})
+  Pilbear::Models::City.create({label: "Vesoul", country_id: "FR"})
+  Pilbear::Models::City.create({label: "Ho Chi Minh City", country_id: "VN"})
+  Pilbear::Models::City.create({label: "Hanoi", country_id: "VN"})
 end
 
 def category
@@ -42,6 +56,7 @@ end
 Sam.namespace "db" do
   task "seed" do
     user
+    language_country_city
     category
   end
 end
