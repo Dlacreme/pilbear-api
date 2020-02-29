@@ -6,9 +6,7 @@ require "../models/event_user"
 require "../models/profile"
 
 module Pilbear::Views
-
   class User < Jennifer::View::Base
-
     mapping(
       id: {type: Int32, primary: true},
       email: String,
@@ -23,19 +21,19 @@ module Pilbear::Views
     )
 
     JSON.mapping(
-      id: Int32?,
-      email: String?,
-      role: String?,
-      profile_id: Int32?,
-      nickname: String?,
-      first_name: String?,
-      last_name: String?,
-      picture_url: String?,
-      birthdate: Time?,
-      gender: String?,
+      id: {type: Int32?, emit_null: true},
+      email: {type: String?, emit_null: true},
+      role: {type: String?, emit_null: true},
+      profile_id: {type: Int32?, emit_null: true},
+      nickname: {type: String?, emit_null: true},
+      first_name: {type: String?, emit_null: true},
+      last_name: {type: String?, emit_null: true},
+      picture_url: {type: String?, emit_null: true},
+      birthdate: {type: Time?, emit_null: true},
+      gender: {type: String?, emit_null: true},
     )
 
-    def self.query() : Jennifer::QueryBuilder::ModelQuery(User)
+    def self.query : Jennifer::QueryBuilder::ModelQuery(User)
       User.all
         .join(Models::Profile) { Models::Profile._id == User._profile_id }
         .select(
@@ -65,7 +63,5 @@ module Pilbear::Views
       return nil if users.size == 0
       users[0]
     end
-
   end
-
 end

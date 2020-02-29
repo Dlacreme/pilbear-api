@@ -8,7 +8,7 @@ require "../views/user"
 module Pilbear::Handlers
   class UserHandler < PilbearHandler
     def get_me(context)
-      Views::User.find!(context.get("user_id").as(Int64).to_i).to_json
+      Views::User.find!(user_id).to_json
     end
 
     def get(context)
@@ -23,6 +23,14 @@ module Pilbear::Handlers
       Views::User.query.where {
         sql("users.email ILIKE %s OR profiles.first_name ILIKE %s OR profiles.nickname ILIKE %s OR profiles.last_name ILIKE %s", [q, q, q, q])
       }.to_a.to_json
+    end
+
+    def edit_profile(context)
+      user = current_user!(context)
+      profile = Models::Profile.find!(user.profile_id)
+      profile.update_from_hash body
+      profile.save!
+      Views::User.find!(user.id).to_json
     end
 
     def login(context)

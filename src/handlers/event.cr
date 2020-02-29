@@ -8,7 +8,7 @@ module Pilbear::Handlers
   class EventHandler < PilbearHandler
     def list_mine(context)
       evs = Views::Event.query
-        .where { sql("events.created_by_id = %s", [context.get("user_id").to_i]) }
+        .where { sql("events.created_by_id = %s", [user_id]) }
         .to_a
       Views::Event.with_location_and_members(evs).to_json
     end

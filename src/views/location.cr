@@ -1,8 +1,5 @@
-
 module Pilbear::Views
-
   class Location < Jennifer::View::Base
-
     mapping(
       id: Primary32,
       label: String,
@@ -17,19 +14,19 @@ module Pilbear::Views
     )
 
     JSON.mapping(
-      id: Int32?,
-      label: String?,
-      description: String?,
-      lat: Float64?,
-      lng: Float64?,
-      google_id: String?,
-      city_id: Int32?,
-      country_id: String?,
-      city: String?,
-      country: String?,
+      id: {type: Int32?, emit_null: true},
+      label: {type: String?, emit_null: true},
+      description: {type: String?, emit_null: true},
+      lat: {type: Float64?, emit_null: true},
+      lng: {type: Float64?, emit_null: true},
+      google_id: {type: String?, emit_null: true},
+      city_id: {type: Int32?, emit_null: true},
+      country_id: {type: String?, emit_null: true},
+      city: {type: String?, emit_null: true},
+      country: {type: String?, emit_null: true},
     )
 
-    def self.query() : Jennifer::QueryBuilder::ModelQuery(Location)
+    def self.query : Jennifer::QueryBuilder::ModelQuery(Location)
       Location.all
         .join(Models::City) { Models::City._id == Models::Location._city_id }
         .join(Models::Country) { Models::Country._id == Models::City._country_id }
@@ -60,7 +57,5 @@ module Pilbear::Views
       return nil if res.size == 0
       res[0]
     end
-
   end
-
 end

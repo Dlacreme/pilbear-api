@@ -22,19 +22,19 @@ module Pilbear::Views
     )
 
     JSON.mapping(
-      id: Int32?,
-      label: String?,
-      description: String?,
-      capacity: Int32?,
-      created_by_id: Int32?,
-      start_date: Time?,
-      end_date: Time?,
-      category_id: String?,
-      location_id: Int32?,
-      confidentiality: String?,
-      is_disabled: Bool?,
-      location: {type: Location, nilable: true},
-      members: {type: Array(EventUser), nilable: true}
+      id: {type: Int32?, emit_null: true},
+      label: {type: String?, emit_null: true},
+      description: {type: String?, emit_null: true},
+      capacity: {type: Int32?, emit_null: true},
+      created_by_id: {type: Int32?, emit_null: true},
+      start_date: {type: Time?, emit_null: true},
+      end_date: {type: Time?, emit_null: true},
+      category_id: {type: String?, emit_null: true},
+      location_id: {type: Int32?, emit_null: true},
+      confidentiality: {type: String?, emit_null: true},
+      is_disabled: {type: Bool?, emit_null: true},
+      location: {type: Location?, emit_null: true},
+      members: {type: Array(EventUser)?, emit_null: true},
     )
 
     def self.query(show_all : Bool = false) : Jennifer::QueryBuilder::ModelQuery(Event)

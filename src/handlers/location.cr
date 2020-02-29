@@ -9,7 +9,7 @@ module Pilbear::Handlers
     def list(context)
       puts(typeof(context.params.json))
       Views::Location.query
-        .where { sql("locations.created_by_id = %s", [context.get("user_id")]) }
+        .where { sql("locations.created_by_id = %s", [user_id]) }
         .to_a.to_json
     end
 

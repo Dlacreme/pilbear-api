@@ -1,16 +1,14 @@
-
 module Pilbear::Middlewares
-
   class PublicRouteMiddleware < Kemal::Handler
-
     # Add public routes here
     # exclude [
 
     # ], "GET"
     exclude [
       "/register",
-      "/login"
+      "/login",
     ], "POST"
+
     # exclude [
 
     # ], "PUT"
@@ -29,7 +27,5 @@ module Pilbear::Middlewares
       end
       call_next context
     end
-
   end
-
 end

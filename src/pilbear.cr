@@ -28,6 +28,7 @@ module Pilbear
   get "/user/:id" { |context| userHandler.get(context) }
   post "/login" { |context| userHandler.login(context) }
   post "/register" { |context| userHandler.register(context) }
+  put "/profile" { |context| userHandler.edit_profile(context) }
   # Category
   get "/categories" { |context| categoryHandler.list(context) }
   # Location
