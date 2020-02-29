@@ -63,6 +63,6 @@ module Pilbear
   end
 
   Kemal.run do |config|
-    server.bind_tcp bind, port
+    config.bind_tcp bind, port
   end
 end
