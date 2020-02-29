@@ -14,8 +14,8 @@ test:
 
 production:
   <<: *default
-  db: dcp5nhiees2bqj
-  host: ec2-18-213-176-229.compute-1.amazonaws.com
+  db: d6c3325mivu0ga
+  host: ec2-184-72-235-80.compute-1.amazonaws.com
   port: 5432
-  user: vmjhveqwiimzdg
-  password: bf44f76479d387ff9861b04b41d4039c8c01dfacbfea9f37ebf3b5f8e9b499cf
+  user: dounpppiruqezn
+  password: 814f0a49cd4bbb294d1cc8dd89fca8e56ad5be5dbd4b497f0eb516ba1f8bbb95
