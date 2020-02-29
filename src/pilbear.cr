@@ -5,12 +5,6 @@ require "./handlers/*"
 require "./models/*"
 require "../config/config"
 
-class HTTP::Server::Context
-  def current_user_id : Int32
-    self.get("user_id").as(Int32)
-  end
-end
-
 module Pilbear
   VERSION = "0.0.1"
 
