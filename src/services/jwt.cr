@@ -15,6 +15,8 @@ module Pilbear::Services
       payload, header = ::JWT.decode(token, ENV[Const::Env::SECRET], ::JWT::Algorithm::HS256)
       return nil if payload["expire"].as_i64 < Time.utc.to_unix
       payload["user_id"].as_i64
+    rescue
+      nil
     end
   end
 end

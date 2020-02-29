@@ -8,7 +8,7 @@ require "../views/user"
 module Pilbear::Handlers
   class UserHandler < PilbearHandler
     def get_me(context)
-      Views::User.find!(context.get("user_id").as(Int32)).to_json
+      Views::User.find!(context.get("user_id").as(Int64).to_i).to_json
     end
 
     def get(context)
