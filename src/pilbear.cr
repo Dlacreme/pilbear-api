@@ -53,12 +53,16 @@ module Pilbear
   post "/event/:id/join" { |context| eventHandler.join(context) }
   delete "/event/:id/join" { |context| eventHandler.leave(context) }
 
+  bind = "0.0.0.0"
+  port = 8080
+
+  OptionParser.parse do |opts|
+    opts.on("-p PORT", "--port PORT", "define port to run server") do |opt|
+      port = opt.to_i
+    end
+  end
+
   Kemal.run do |config|
-    puts ARGV
-    port_cli_index = ARGV.index { |arg| arg == "--port" }
-    port = port_cli_index != nil && ARGV.size >= port_cli_index.not_nil! ? ARGV[port_cli_index.not_nil! + 1].to_i : 3000
-    puts port
-    server = config.server.not_nil!
-    server.bind_tcp "0.0.0.0", port
+    server.bind_tcp bind, port
   end
 end
