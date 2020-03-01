@@ -2,8 +2,8 @@
 -- PostgreSQL database dump
 --
 
--- Dumped from database version 12.1
--- Dumped by pg_dump version 12.1
+-- Dumped from database version 12.2
+-- Dumped by pg_dump version 12.2
 
 SET statement_timeout = 0;
 SET lock_timeout = 0;
@@ -390,6 +390,41 @@ ALTER SEQUENCE public.profiles_id_seq OWNED BY public.profiles.id;
 
 
 --
+-- Name: user_categories; Type: TABLE; Schema: public; Owner: dlacreme
+--
+
+CREATE TABLE public.user_categories (
+    id integer NOT NULL,
+    user_id integer NOT NULL,
+    category_id character varying(254) NOT NULL
+);
+
+
+ALTER TABLE public.user_categories OWNER TO dlacreme;
+
+--
+-- Name: user_categories_id_seq; Type: SEQUENCE; Schema: public; Owner: dlacreme
+--
+
+CREATE SEQUENCE public.user_categories_id_seq
+    AS integer
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+ALTER TABLE public.user_categories_id_seq OWNER TO dlacreme;
+
+--
+-- Name: user_categories_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: dlacreme
+--
+
+ALTER SEQUENCE public.user_categories_id_seq OWNED BY public.user_categories.id;
+
+
+--
 -- Name: users; Type: TABLE; Schema: public; Owner: dlacreme
 --
 
@@ -473,6 +508,13 @@ ALTER TABLE ONLY public.profiles ALTER COLUMN id SET DEFAULT nextval('public.pro
 
 
 --
+-- Name: user_categories id; Type: DEFAULT; Schema: public; Owner: dlacreme
+--
+
+ALTER TABLE ONLY public.user_categories ALTER COLUMN id SET DEFAULT nextval('public.user_categories_id_seq'::regclass);
+
+
+--
 -- Name: users id; Type: DEFAULT; Schema: public; Owner: dlacreme
 --
 
@@ -549,6 +591,14 @@ ALTER TABLE ONLY public.migration_versions
 
 ALTER TABLE ONLY public.profiles
     ADD CONSTRAINT profiles_pkey PRIMARY KEY (id);
+
+
+--
+-- Name: user_categories user_categories_pkey; Type: CONSTRAINT; Schema: public; Owner: dlacreme
+--
+
+ALTER TABLE ONLY public.user_categories
+    ADD CONSTRAINT user_categories_pkey PRIMARY KEY (id);
 
 
 --

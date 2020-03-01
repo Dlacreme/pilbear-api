@@ -1,5 +1,6 @@
 require "jennifer"
 require "./profile"
+require "./user_category"
 
 module Pilbear::Models
   class User < Jennifer::Model::Base
@@ -34,6 +35,19 @@ module Pilbear::Models
         "birthdate"   => p.birthdate,
         "gender"      => p.gender,
       }
+    end
+
+    def favorites! : Array(Category)
+      Category.all
+        .join(UserCategory) { UserCategory._category_id == Category._id && UserCategory._user_id == self.id }
+        .to_a
+    end
+
+    def update_favorites(category_ids : Array(String))
+      UserCategory.where { _user_id == self.id }.delete
+      new_favs = [] of UserCategory
+      category_ids.each { |cat_id| new_favs << (UserCategory.new({user_id: self.id, category_id: cat_id})) }
+      UserCategory.import(new_favs)
     end
   end
 end

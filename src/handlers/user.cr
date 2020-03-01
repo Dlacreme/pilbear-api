@@ -8,13 +8,13 @@ require "../views/user"
 module Pilbear::Handlers
   class UserHandler < PilbearHandler
     def get_me(context)
-      Views::User.find!(user_id).to_json
+      Views::User.find!(user_id).with_favorites.to_json
     end
 
     def get(context)
       u = Views::User.find?(context.params.url["id"])
       not_found!("User not found") if u.nil?
-      u.to_json
+      u.with_favorites.to_json
     end
 
     def search(context)
@@ -27,10 +27,18 @@ module Pilbear::Handlers
 
     def edit_profile(context)
       user = current_user!(context)
+      begin
+        favorites = get_favorites_from_body(body)
+        user.update_favorites(favorites.not_nil!) if favorites != nil
+      rescue ex
+        fail_query!("Invalid favorites format")
+        return
+      end
+
       profile = Models::Profile.find!(user.profile_id)
       profile.update_from_hash body
       profile.save!
-      Views::User.find!(user.id).to_json
+      Views::User.find!(user.id).with_favorites.to_json
     end
 
     def login(context)
@@ -64,6 +72,14 @@ module Pilbear::Handlers
         raise ex
       end
       login(context)
+    end
+
+    private def get_favorites_from_body(body)
+      return nil unless body.has_key?("favorites")
+      favorites : Array(String) = [] of String
+      body["favorites"].as(Array(JSON::Any))
+        .each { |x| favorites << x.to_s }
+      return favorites
     end
   end
 end
