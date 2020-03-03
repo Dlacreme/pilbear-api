@@ -21,6 +21,7 @@ module Pilbear
   categoryHandler = Handlers::CategoryHandler.new
   locationHandler = Handlers::LocationHandler.new
   eventHandler = Handlers::EventHandler.new
+  uploadHandler = Handlers::UploadHandler.new
 
   # User
   get "/me" { |context| userHandler.get_me(context) }
@@ -47,6 +48,8 @@ module Pilbear
   delete "/event/:id" { |context| eventHandler.disable(context) }
   post "/event/:id/join" { |context| eventHandler.join(context) }
   delete "/event/:id/join" { |context| eventHandler.leave(context) }
+  # Others
+  post "/upload" { |context| uploadHandler.upload(context) }
 
   bind = "0.0.0.0"
   port = 3000

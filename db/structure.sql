@@ -2,7 +2,7 @@
 -- PostgreSQL database dump
 --
 
--- Dumped from database version 12.2
+-- Dumped from database version 12.1 (Ubuntu 12.1-1.pgdg16.04+1)
 -- Dumped by pg_dump version 12.2
 
 SET statement_timeout = 0;
@@ -17,7 +17,7 @@ SET client_min_messages = warning;
 SET row_security = off;
 
 --
--- Name: confidentiality_enum; Type: TYPE; Schema: public; Owner: dlacreme
+-- Name: confidentiality_enum; Type: TYPE; Schema: public; Owner: dounpppiruqezn
 --
 
 CREATE TYPE public.confidentiality_enum AS ENUM (
@@ -26,10 +26,10 @@ CREATE TYPE public.confidentiality_enum AS ENUM (
 );
 
 
-ALTER TYPE public.confidentiality_enum OWNER TO dlacreme;
+ALTER TYPE public.confidentiality_enum OWNER TO dounpppiruqezn;
 
 --
--- Name: event_user_role_enum; Type: TYPE; Schema: public; Owner: dlacreme
+-- Name: event_user_role_enum; Type: TYPE; Schema: public; Owner: dounpppiruqezn
 --
 
 CREATE TYPE public.event_user_role_enum AS ENUM (
@@ -38,10 +38,10 @@ CREATE TYPE public.event_user_role_enum AS ENUM (
 );
 
 
-ALTER TYPE public.event_user_role_enum OWNER TO dlacreme;
+ALTER TYPE public.event_user_role_enum OWNER TO dounpppiruqezn;
 
 --
--- Name: gender_enum; Type: TYPE; Schema: public; Owner: dlacreme
+-- Name: gender_enum; Type: TYPE; Schema: public; Owner: dounpppiruqezn
 --
 
 CREATE TYPE public.gender_enum AS ENUM (
@@ -50,10 +50,10 @@ CREATE TYPE public.gender_enum AS ENUM (
 );
 
 
-ALTER TYPE public.gender_enum OWNER TO dlacreme;
+ALTER TYPE public.gender_enum OWNER TO dounpppiruqezn;
 
 --
--- Name: user_provider_enum; Type: TYPE; Schema: public; Owner: dlacreme
+-- Name: user_provider_enum; Type: TYPE; Schema: public; Owner: dounpppiruqezn
 --
 
 CREATE TYPE public.user_provider_enum AS ENUM (
@@ -62,10 +62,10 @@ CREATE TYPE public.user_provider_enum AS ENUM (
 );
 
 
-ALTER TYPE public.user_provider_enum OWNER TO dlacreme;
+ALTER TYPE public.user_provider_enum OWNER TO dounpppiruqezn;
 
 --
--- Name: user_role_enum; Type: TYPE; Schema: public; Owner: dlacreme
+-- Name: user_role_enum; Type: TYPE; Schema: public; Owner: dounpppiruqezn
 --
 
 CREATE TYPE public.user_role_enum AS ENUM (
@@ -74,10 +74,10 @@ CREATE TYPE public.user_role_enum AS ENUM (
 );
 
 
-ALTER TYPE public.user_role_enum OWNER TO dlacreme;
+ALTER TYPE public.user_role_enum OWNER TO dounpppiruqezn;
 
 --
--- Name: calculate_distance(double precision, double precision, double precision, double precision, character varying); Type: FUNCTION; Schema: public; Owner: dlacreme
+-- Name: calculate_distance(double precision, double precision, double precision, double precision, character varying); Type: FUNCTION; Schema: public; Owner: dounpppiruqezn
 --
 
 CREATE FUNCTION public.calculate_distance(lat1 double precision, lon1 double precision, lat2 double precision, lon2 double precision, units character varying) RETURNS double precision
@@ -111,14 +111,14 @@ CREATE FUNCTION public.calculate_distance(lat1 double precision, lon1 double pre
 $$;
 
 
-ALTER FUNCTION public.calculate_distance(lat1 double precision, lon1 double precision, lat2 double precision, lon2 double precision, units character varying) OWNER TO dlacreme;
+ALTER FUNCTION public.calculate_distance(lat1 double precision, lon1 double precision, lat2 double precision, lon2 double precision, units character varying) OWNER TO dounpppiruqezn;
 
 SET default_tablespace = '';
 
 SET default_table_access_method = heap;
 
 --
--- Name: categories; Type: TABLE; Schema: public; Owner: dlacreme
+-- Name: categories; Type: TABLE; Schema: public; Owner: dounpppiruqezn
 --
 
 CREATE TABLE public.categories (
@@ -128,10 +128,10 @@ CREATE TABLE public.categories (
 );
 
 
-ALTER TABLE public.categories OWNER TO dlacreme;
+ALTER TABLE public.categories OWNER TO dounpppiruqezn;
 
 --
--- Name: cities; Type: TABLE; Schema: public; Owner: dlacreme
+-- Name: cities; Type: TABLE; Schema: public; Owner: dounpppiruqezn
 --
 
 CREATE TABLE public.cities (
@@ -141,10 +141,10 @@ CREATE TABLE public.cities (
 );
 
 
-ALTER TABLE public.cities OWNER TO dlacreme;
+ALTER TABLE public.cities OWNER TO dounpppiruqezn;
 
 --
--- Name: cities_id_seq; Type: SEQUENCE; Schema: public; Owner: dlacreme
+-- Name: cities_id_seq; Type: SEQUENCE; Schema: public; Owner: dounpppiruqezn
 --
 
 CREATE SEQUENCE public.cities_id_seq
@@ -156,17 +156,17 @@ CREATE SEQUENCE public.cities_id_seq
     CACHE 1;
 
 
-ALTER TABLE public.cities_id_seq OWNER TO dlacreme;
+ALTER TABLE public.cities_id_seq OWNER TO dounpppiruqezn;
 
 --
--- Name: cities_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: dlacreme
+-- Name: cities_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: dounpppiruqezn
 --
 
 ALTER SEQUENCE public.cities_id_seq OWNED BY public.cities.id;
 
 
 --
--- Name: countries; Type: TABLE; Schema: public; Owner: dlacreme
+-- Name: countries; Type: TABLE; Schema: public; Owner: dounpppiruqezn
 --
 
 CREATE TABLE public.countries (
@@ -176,10 +176,10 @@ CREATE TABLE public.countries (
 );
 
 
-ALTER TABLE public.countries OWNER TO dlacreme;
+ALTER TABLE public.countries OWNER TO dounpppiruqezn;
 
 --
--- Name: event_users; Type: TABLE; Schema: public; Owner: dlacreme
+-- Name: event_users; Type: TABLE; Schema: public; Owner: dounpppiruqezn
 --
 
 CREATE TABLE public.event_users (
@@ -192,10 +192,10 @@ CREATE TABLE public.event_users (
 );
 
 
-ALTER TABLE public.event_users OWNER TO dlacreme;
+ALTER TABLE public.event_users OWNER TO dounpppiruqezn;
 
 --
--- Name: event_users_id_seq; Type: SEQUENCE; Schema: public; Owner: dlacreme
+-- Name: event_users_id_seq; Type: SEQUENCE; Schema: public; Owner: dounpppiruqezn
 --
 
 CREATE SEQUENCE public.event_users_id_seq
@@ -207,17 +207,17 @@ CREATE SEQUENCE public.event_users_id_seq
     CACHE 1;
 
 
-ALTER TABLE public.event_users_id_seq OWNER TO dlacreme;
+ALTER TABLE public.event_users_id_seq OWNER TO dounpppiruqezn;
 
 --
--- Name: event_users_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: dlacreme
+-- Name: event_users_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: dounpppiruqezn
 --
 
 ALTER SEQUENCE public.event_users_id_seq OWNED BY public.event_users.id;
 
 
 --
--- Name: events; Type: TABLE; Schema: public; Owner: dlacreme
+-- Name: events; Type: TABLE; Schema: public; Owner: dounpppiruqezn
 --
 
 CREATE TABLE public.events (
@@ -237,10 +237,10 @@ CREATE TABLE public.events (
 );
 
 
-ALTER TABLE public.events OWNER TO dlacreme;
+ALTER TABLE public.events OWNER TO dounpppiruqezn;
 
 --
--- Name: events_id_seq; Type: SEQUENCE; Schema: public; Owner: dlacreme
+-- Name: events_id_seq; Type: SEQUENCE; Schema: public; Owner: dounpppiruqezn
 --
 
 CREATE SEQUENCE public.events_id_seq
@@ -252,17 +252,17 @@ CREATE SEQUENCE public.events_id_seq
     CACHE 1;
 
 
-ALTER TABLE public.events_id_seq OWNER TO dlacreme;
+ALTER TABLE public.events_id_seq OWNER TO dounpppiruqezn;
 
 --
--- Name: events_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: dlacreme
+-- Name: events_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: dounpppiruqezn
 --
 
 ALTER SEQUENCE public.events_id_seq OWNED BY public.events.id;
 
 
 --
--- Name: languages; Type: TABLE; Schema: public; Owner: dlacreme
+-- Name: languages; Type: TABLE; Schema: public; Owner: dounpppiruqezn
 --
 
 CREATE TABLE public.languages (
@@ -272,10 +272,10 @@ CREATE TABLE public.languages (
 );
 
 
-ALTER TABLE public.languages OWNER TO dlacreme;
+ALTER TABLE public.languages OWNER TO dounpppiruqezn;
 
 --
--- Name: locations; Type: TABLE; Schema: public; Owner: dlacreme
+-- Name: locations; Type: TABLE; Schema: public; Owner: dounpppiruqezn
 --
 
 CREATE TABLE public.locations (
@@ -292,10 +292,10 @@ CREATE TABLE public.locations (
 );
 
 
-ALTER TABLE public.locations OWNER TO dlacreme;
+ALTER TABLE public.locations OWNER TO dounpppiruqezn;
 
 --
--- Name: locations_id_seq; Type: SEQUENCE; Schema: public; Owner: dlacreme
+-- Name: locations_id_seq; Type: SEQUENCE; Schema: public; Owner: dounpppiruqezn
 --
 
 CREATE SEQUENCE public.locations_id_seq
@@ -307,17 +307,17 @@ CREATE SEQUENCE public.locations_id_seq
     CACHE 1;
 
 
-ALTER TABLE public.locations_id_seq OWNER TO dlacreme;
+ALTER TABLE public.locations_id_seq OWNER TO dounpppiruqezn;
 
 --
--- Name: locations_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: dlacreme
+-- Name: locations_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: dounpppiruqezn
 --
 
 ALTER SEQUENCE public.locations_id_seq OWNED BY public.locations.id;
 
 
 --
--- Name: migration_versions; Type: TABLE; Schema: public; Owner: dlacreme
+-- Name: migration_versions; Type: TABLE; Schema: public; Owner: dounpppiruqezn
 --
 
 CREATE TABLE public.migration_versions (
@@ -326,10 +326,10 @@ CREATE TABLE public.migration_versions (
 );
 
 
-ALTER TABLE public.migration_versions OWNER TO dlacreme;
+ALTER TABLE public.migration_versions OWNER TO dounpppiruqezn;
 
 --
--- Name: migration_versions_id_seq; Type: SEQUENCE; Schema: public; Owner: dlacreme
+-- Name: migration_versions_id_seq; Type: SEQUENCE; Schema: public; Owner: dounpppiruqezn
 --
 
 CREATE SEQUENCE public.migration_versions_id_seq
@@ -341,17 +341,17 @@ CREATE SEQUENCE public.migration_versions_id_seq
     CACHE 1;
 
 
-ALTER TABLE public.migration_versions_id_seq OWNER TO dlacreme;
+ALTER TABLE public.migration_versions_id_seq OWNER TO dounpppiruqezn;
 
 --
--- Name: migration_versions_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: dlacreme
+-- Name: migration_versions_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: dounpppiruqezn
 --
 
 ALTER SEQUENCE public.migration_versions_id_seq OWNED BY public.migration_versions.id;
 
 
 --
--- Name: profiles; Type: TABLE; Schema: public; Owner: dlacreme
+-- Name: profiles; Type: TABLE; Schema: public; Owner: dounpppiruqezn
 --
 
 CREATE TABLE public.profiles (
@@ -365,10 +365,10 @@ CREATE TABLE public.profiles (
 );
 
 
-ALTER TABLE public.profiles OWNER TO dlacreme;
+ALTER TABLE public.profiles OWNER TO dounpppiruqezn;
 
 --
--- Name: profiles_id_seq; Type: SEQUENCE; Schema: public; Owner: dlacreme
+-- Name: profiles_id_seq; Type: SEQUENCE; Schema: public; Owner: dounpppiruqezn
 --
 
 CREATE SEQUENCE public.profiles_id_seq
@@ -380,17 +380,17 @@ CREATE SEQUENCE public.profiles_id_seq
     CACHE 1;
 
 
-ALTER TABLE public.profiles_id_seq OWNER TO dlacreme;
+ALTER TABLE public.profiles_id_seq OWNER TO dounpppiruqezn;
 
 --
--- Name: profiles_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: dlacreme
+-- Name: profiles_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: dounpppiruqezn
 --
 
 ALTER SEQUENCE public.profiles_id_seq OWNED BY public.profiles.id;
 
 
 --
--- Name: user_categories; Type: TABLE; Schema: public; Owner: dlacreme
+-- Name: user_categories; Type: TABLE; Schema: public; Owner: dounpppiruqezn
 --
 
 CREATE TABLE public.user_categories (
@@ -400,10 +400,10 @@ CREATE TABLE public.user_categories (
 );
 
 
-ALTER TABLE public.user_categories OWNER TO dlacreme;
+ALTER TABLE public.user_categories OWNER TO dounpppiruqezn;
 
 --
--- Name: user_categories_id_seq; Type: SEQUENCE; Schema: public; Owner: dlacreme
+-- Name: user_categories_id_seq; Type: SEQUENCE; Schema: public; Owner: dounpppiruqezn
 --
 
 CREATE SEQUENCE public.user_categories_id_seq
@@ -415,17 +415,17 @@ CREATE SEQUENCE public.user_categories_id_seq
     CACHE 1;
 
 
-ALTER TABLE public.user_categories_id_seq OWNER TO dlacreme;
+ALTER TABLE public.user_categories_id_seq OWNER TO dounpppiruqezn;
 
 --
--- Name: user_categories_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: dlacreme
+-- Name: user_categories_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: dounpppiruqezn
 --
 
 ALTER SEQUENCE public.user_categories_id_seq OWNED BY public.user_categories.id;
 
 
 --
--- Name: users; Type: TABLE; Schema: public; Owner: dlacreme
+-- Name: users; Type: TABLE; Schema: public; Owner: dounpppiruqezn
 --
 
 CREATE TABLE public.users (
@@ -441,10 +441,10 @@ CREATE TABLE public.users (
 );
 
 
-ALTER TABLE public.users OWNER TO dlacreme;
+ALTER TABLE public.users OWNER TO dounpppiruqezn;
 
 --
--- Name: users_id_seq; Type: SEQUENCE; Schema: public; Owner: dlacreme
+-- Name: users_id_seq; Type: SEQUENCE; Schema: public; Owner: dounpppiruqezn
 --
 
 CREATE SEQUENCE public.users_id_seq
@@ -456,73 +456,73 @@ CREATE SEQUENCE public.users_id_seq
     CACHE 1;
 
 
-ALTER TABLE public.users_id_seq OWNER TO dlacreme;
+ALTER TABLE public.users_id_seq OWNER TO dounpppiruqezn;
 
 --
--- Name: users_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: dlacreme
+-- Name: users_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: dounpppiruqezn
 --
 
 ALTER SEQUENCE public.users_id_seq OWNED BY public.users.id;
 
 
 --
--- Name: cities id; Type: DEFAULT; Schema: public; Owner: dlacreme
+-- Name: cities id; Type: DEFAULT; Schema: public; Owner: dounpppiruqezn
 --
 
 ALTER TABLE ONLY public.cities ALTER COLUMN id SET DEFAULT nextval('public.cities_id_seq'::regclass);
 
 
 --
--- Name: event_users id; Type: DEFAULT; Schema: public; Owner: dlacreme
+-- Name: event_users id; Type: DEFAULT; Schema: public; Owner: dounpppiruqezn
 --
 
 ALTER TABLE ONLY public.event_users ALTER COLUMN id SET DEFAULT nextval('public.event_users_id_seq'::regclass);
 
 
 --
--- Name: events id; Type: DEFAULT; Schema: public; Owner: dlacreme
+-- Name: events id; Type: DEFAULT; Schema: public; Owner: dounpppiruqezn
 --
 
 ALTER TABLE ONLY public.events ALTER COLUMN id SET DEFAULT nextval('public.events_id_seq'::regclass);
 
 
 --
--- Name: locations id; Type: DEFAULT; Schema: public; Owner: dlacreme
+-- Name: locations id; Type: DEFAULT; Schema: public; Owner: dounpppiruqezn
 --
 
 ALTER TABLE ONLY public.locations ALTER COLUMN id SET DEFAULT nextval('public.locations_id_seq'::regclass);
 
 
 --
--- Name: migration_versions id; Type: DEFAULT; Schema: public; Owner: dlacreme
+-- Name: migration_versions id; Type: DEFAULT; Schema: public; Owner: dounpppiruqezn
 --
 
 ALTER TABLE ONLY public.migration_versions ALTER COLUMN id SET DEFAULT nextval('public.migration_versions_id_seq'::regclass);
 
 
 --
--- Name: profiles id; Type: DEFAULT; Schema: public; Owner: dlacreme
+-- Name: profiles id; Type: DEFAULT; Schema: public; Owner: dounpppiruqezn
 --
 
 ALTER TABLE ONLY public.profiles ALTER COLUMN id SET DEFAULT nextval('public.profiles_id_seq'::regclass);
 
 
 --
--- Name: user_categories id; Type: DEFAULT; Schema: public; Owner: dlacreme
+-- Name: user_categories id; Type: DEFAULT; Schema: public; Owner: dounpppiruqezn
 --
 
 ALTER TABLE ONLY public.user_categories ALTER COLUMN id SET DEFAULT nextval('public.user_categories_id_seq'::regclass);
 
 
 --
--- Name: users id; Type: DEFAULT; Schema: public; Owner: dlacreme
+-- Name: users id; Type: DEFAULT; Schema: public; Owner: dounpppiruqezn
 --
 
 ALTER TABLE ONLY public.users ALTER COLUMN id SET DEFAULT nextval('public.users_id_seq'::regclass);
 
 
 --
--- Name: categories categories_pkey; Type: CONSTRAINT; Schema: public; Owner: dlacreme
+-- Name: categories categories_pkey; Type: CONSTRAINT; Schema: public; Owner: dounpppiruqezn
 --
 
 ALTER TABLE ONLY public.categories
@@ -530,7 +530,7 @@ ALTER TABLE ONLY public.categories
 
 
 --
--- Name: cities cities_pkey; Type: CONSTRAINT; Schema: public; Owner: dlacreme
+-- Name: cities cities_pkey; Type: CONSTRAINT; Schema: public; Owner: dounpppiruqezn
 --
 
 ALTER TABLE ONLY public.cities
@@ -538,7 +538,7 @@ ALTER TABLE ONLY public.cities
 
 
 --
--- Name: countries countries_pkey; Type: CONSTRAINT; Schema: public; Owner: dlacreme
+-- Name: countries countries_pkey; Type: CONSTRAINT; Schema: public; Owner: dounpppiruqezn
 --
 
 ALTER TABLE ONLY public.countries
@@ -546,7 +546,7 @@ ALTER TABLE ONLY public.countries
 
 
 --
--- Name: event_users event_users_pkey; Type: CONSTRAINT; Schema: public; Owner: dlacreme
+-- Name: event_users event_users_pkey; Type: CONSTRAINT; Schema: public; Owner: dounpppiruqezn
 --
 
 ALTER TABLE ONLY public.event_users
@@ -554,7 +554,7 @@ ALTER TABLE ONLY public.event_users
 
 
 --
--- Name: events events_pkey; Type: CONSTRAINT; Schema: public; Owner: dlacreme
+-- Name: events events_pkey; Type: CONSTRAINT; Schema: public; Owner: dounpppiruqezn
 --
 
 ALTER TABLE ONLY public.events
@@ -562,7 +562,7 @@ ALTER TABLE ONLY public.events
 
 
 --
--- Name: languages languages_pkey; Type: CONSTRAINT; Schema: public; Owner: dlacreme
+-- Name: languages languages_pkey; Type: CONSTRAINT; Schema: public; Owner: dounpppiruqezn
 --
 
 ALTER TABLE ONLY public.languages
@@ -570,7 +570,7 @@ ALTER TABLE ONLY public.languages
 
 
 --
--- Name: locations locations_pkey; Type: CONSTRAINT; Schema: public; Owner: dlacreme
+-- Name: locations locations_pkey; Type: CONSTRAINT; Schema: public; Owner: dounpppiruqezn
 --
 
 ALTER TABLE ONLY public.locations
@@ -578,7 +578,7 @@ ALTER TABLE ONLY public.locations
 
 
 --
--- Name: migration_versions migration_versions_pkey; Type: CONSTRAINT; Schema: public; Owner: dlacreme
+-- Name: migration_versions migration_versions_pkey; Type: CONSTRAINT; Schema: public; Owner: dounpppiruqezn
 --
 
 ALTER TABLE ONLY public.migration_versions
@@ -586,7 +586,7 @@ ALTER TABLE ONLY public.migration_versions
 
 
 --
--- Name: profiles profiles_pkey; Type: CONSTRAINT; Schema: public; Owner: dlacreme
+-- Name: profiles profiles_pkey; Type: CONSTRAINT; Schema: public; Owner: dounpppiruqezn
 --
 
 ALTER TABLE ONLY public.profiles
@@ -594,7 +594,7 @@ ALTER TABLE ONLY public.profiles
 
 
 --
--- Name: user_categories user_categories_pkey; Type: CONSTRAINT; Schema: public; Owner: dlacreme
+-- Name: user_categories user_categories_pkey; Type: CONSTRAINT; Schema: public; Owner: dounpppiruqezn
 --
 
 ALTER TABLE ONLY public.user_categories
@@ -602,7 +602,7 @@ ALTER TABLE ONLY public.user_categories
 
 
 --
--- Name: users users_pkey; Type: CONSTRAINT; Schema: public; Owner: dlacreme
+-- Name: users users_pkey; Type: CONSTRAINT; Schema: public; Owner: dounpppiruqezn
 --
 
 ALTER TABLE ONLY public.users
@@ -610,18 +610,35 @@ ALTER TABLE ONLY public.users
 
 
 --
--- Name: user_email_index; Type: INDEX; Schema: public; Owner: dlacreme
+-- Name: user_email_index; Type: INDEX; Schema: public; Owner: dounpppiruqezn
 --
 
 CREATE UNIQUE INDEX user_email_index ON public.users USING btree (email);
 
 
 --
--- Name: users fk_cr_a8794354f0; Type: FK CONSTRAINT; Schema: public; Owner: dlacreme
+-- Name: users fk_cr_a8794354f0; Type: FK CONSTRAINT; Schema: public; Owner: dounpppiruqezn
 --
 
 ALTER TABLE ONLY public.users
     ADD CONSTRAINT fk_cr_a8794354f0 FOREIGN KEY (profile_id) REFERENCES public.profiles(id) ON UPDATE RESTRICT ON DELETE RESTRICT;
+
+
+--
+-- Name: SCHEMA public; Type: ACL; Schema: -; Owner: dounpppiruqezn
+--
+
+REVOKE ALL ON SCHEMA public FROM postgres;
+REVOKE ALL ON SCHEMA public FROM PUBLIC;
+GRANT ALL ON SCHEMA public TO dounpppiruqezn;
+GRANT ALL ON SCHEMA public TO PUBLIC;
+
+
+--
+-- Name: LANGUAGE plpgsql; Type: ACL; Schema: -; Owner: postgres
+--
+
+GRANT ALL ON LANGUAGE plpgsql TO dounpppiruqezn;
 
 
 --
