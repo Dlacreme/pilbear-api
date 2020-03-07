@@ -12,5 +12,9 @@ test:
   <<: *default
   db: pilbear_test
 
-development:
+production:
   <<: *default
+  db: dostng4g9eimn
+  host: ec2-54-246-89-234.eu-west-1.compute.amazonaws.com
+  user: mqxdbddmzimxty
+  password: d93523f1e3de07c967e92bcca35079fc86a8718c9ed380dd8fa99b9c40388207
