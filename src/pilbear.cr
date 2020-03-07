@@ -49,8 +49,9 @@ module Pilbear
   post "/event/:id/join" { |context| eventHandler.join(context) }
   delete "/event/:id/join" { |context| eventHandler.leave(context) }
   # Others
-  post "/upload" { |context| uploadHandler.upload(context) }
+  post "/upload/:type" { |context| uploadHandler.upload(context) }
 
+  # ## Run
   bind = "0.0.0.0"
   port = 3000
 

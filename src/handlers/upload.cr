@@ -7,7 +7,7 @@ module Pilbear::Handlers
     def upload(context)
       url = Services::Upload.put(
         context.params.files["image"].tempfile,
-        "user_#{user_id}#{File.extname(context.params.files["image"].filename.as(String))}"
+        "#{context.params.url["type"]}_#{user_id}#{File.extname(context.params.files["image"].filename.as(String))}"
       )
       {"file_url": url}.to_json
     rescue ex
