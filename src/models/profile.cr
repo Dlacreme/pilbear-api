@@ -26,12 +26,12 @@ module Pilbear::Models
     has_one :user, User
 
     def update_from_hash(hash : Hash)
-      self.nickname = hash["nickname"].as(String) if hash.has_key?("nickname")
-      self.first_name = hash["first_name"].as(String) if hash.has_key?("first_name")
-      self.last_name = hash["last_name"].as(String) if hash.has_key?("last_name")
-      self.picture_url = hash["picture_url"].as(String) if hash.has_key?("picture_url")
-      self.birthdate = Converters::Datetime.from_string(hash["birthdate"].as(String)) if hash.has_key?("birthdate")
-      self.gender = hash["gender"].as(String) if hash.has_key?("gender")
+      self.nickname = hash["nickname"].as(String) if hash.has_key?("nickname") && hash["nickname"] != nil
+      self.first_name = hash["first_name"].as(String) if hash.has_key?("first_name") && hash["first_name"] != nil
+      self.last_name = hash["last_name"].as(String) if hash.has_key?("last_name") && hash["last_name"] != nil
+      self.picture_url = hash["picture_url"].as(String) if hash.has_key?("picture_url") && hash["picture_url"] != nil
+      self.birthdate = Converters::Datetime.from_string(hash["birthdate"].as(String)) if hash.has_key?("birthdate") && hash["birthdate"] != nil
+      self.gender = hash["gender"].as(String) if hash.has_key?("gender") && hash["gender"] != nil
     end
   end
 end
