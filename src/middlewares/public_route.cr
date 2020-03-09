@@ -9,6 +9,10 @@ module Pilbear::Middlewares
       "/login",
     ], "POST"
 
+    exclude [
+      "/chat/*",
+    ], "GET"
+
     # exclude [
 
     # ], "PUT"

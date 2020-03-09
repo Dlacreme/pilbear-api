@@ -1,7 +1,7 @@
 default: &default
   host: localhost
-  user: dlacreme
-  password: toto
+  user: postgres
+  password: toto42
   adapter: postgres
 
 development:
