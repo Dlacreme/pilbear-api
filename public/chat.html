@@ -6,7 +6,7 @@
     <script>
       $(document).ready(function() {
         // Open WebSocket connection
-        var ws = new WebSocket("ws://127.0.0.1:3000/chat/123");
+        var ws = new WebSocket("ws://127.0.0.1:3000/chat/3");
         // Append each message
         ws.onmessage = function(e) { $('#chat').append(e.data + "\n") };
 

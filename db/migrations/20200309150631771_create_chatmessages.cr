@@ -1,6 +1,6 @@
 class CreateChatmessages < Jennifer::Migration::Base
   def up
-    create_table :chatmessages do |t|
+    create_table :chat_messages do |t|
       t.string :message, { :null => false }
 
       t.reference :chat
@@ -11,8 +11,8 @@ class CreateChatmessages < Jennifer::Migration::Base
   end
 
   def down
-    drop_foreign_key :chatmessages, :chat if foreign_key_exists? :chatmessages, :chat
-    drop_foreign_key :chatmessages, :user if foreign_key_exists? :chatmessages, :user
-    drop_table :chatmessages if table_exists? :chatmessages
+    drop_foreign_key :chat_messages, :chat if foreign_key_exists? :chat_messages, :chat
+    drop_foreign_key :chat_messages, :user if foreign_key_exists? :chat_messages, :user
+    drop_table :chat_messages if table_exists? :chat_messages
   end
 end
