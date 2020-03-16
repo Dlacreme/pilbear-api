@@ -47,19 +47,17 @@ module Pilbear::Views
     def self.find!(id) : Array(ChatUser)
       chats = Views::ChatUser.query
         .where { sql("chats.id = %s", [id]) }
-        .to_a[0]
+        .first
     end
 
     def self.find?(id) : ChatUser | Nil
       chats = Views::ChatUser.query
         .where { sql("chats.id = %s", [id]) }
-        .to_a
-      return nil if chats.size == 0
-      chats[0]
+        .first?
     end
 
     def self.update(chatId : Int32, users : Array(Int32))
-      ChatUser.where { sql("chat_id = %d AND user_id IN (#{users.chomp(',')})", [chatId]) }.update { {:message_pending => true} }
+      ChatUser.where { sql("chat_id = %d AND user_id IN (#{users.merge(",")})", [chatId]) }.update { {:message_pending => true} }
     end
   end
 end
