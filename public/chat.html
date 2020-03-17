@@ -7,12 +7,20 @@
       $(document).ready(function() {
         // Open WebSocket connection
         var ws = new WebSocket("ws://127.0.0.1:3000/chat/3");
+        // ws.send('toto');
         // Append each message
-        ws.onmessage = function(e) { $('#chat').append(e.data + "\n") };
+        ws.onopen = function(e) {
+          ws.send('{"type": "login", "data": {"message": "login", "user_id": 1, "created_at": "' + new Date().toISOString() + '"}}');
+        };
+        ws.onmessage = function(e) {
+          var data = JSON.parse(e.data);
+          console.info(data);
+          $('#chat').append(data.data.created_at + " - " + data.data.user_id + ": " + data.data.message + "\n");
+        };
 
         $("form").bind('submit', function(e) {
           var message = $('#msg').val();
-          ws.send(message);
+          ws.send('{"type": "message", "data": {"message": "' + message + '", "user_id": 1, "created_at": "' + new Date().toISOString() + '"}}');
           $('#msg').val(''); $('#msg').focus();
           e.preventDefault();
         });

@@ -29,9 +29,9 @@ module Pilbear::Views
 
     def self.query : Jennifer::QueryBuilder::ModelQuery(ChatUser)
       q = ChatUser.all
-        .join(Models::Chat) { Models::Chat._id == ChatUser.chat_id }
-        .join(Models::User) { Models::User._id == ChatUser.user_id }
-        .join(Models::Profile) { Models::Profile._id == User.profile_id }
+        .left_join(Models::Chat) { Models::Chat._id == ChatUser._chat_id }
+        .left_join(Models::User) { Models::User._id == ChatUser._user_id }
+        .left_join(Models::Profile) { Models::Profile._id == User._profile_id }
         .select(
           "chat_users.id," \
           "chat_users.user_id," \
@@ -44,20 +44,8 @@ module Pilbear::Views
         )
     end
 
-    def self.find!(id) : Array(ChatUser)
-      chats = Views::ChatUser.query
-        .where { sql("chats.id = %s", [id]) }
-        .first
-    end
-
-    def self.find?(id) : ChatUser | Nil
-      chats = Views::ChatUser.query
-        .where { sql("chats.id = %s", [id]) }
-        .first?
-    end
-
     def self.update(chatId : Int32, users : Array(Int32))
-      ChatUser.where { sql("chat_id = %d AND user_id IN (#{users.merge(",")})", [chatId]) }.update { {:message_pending => true} }
+      ChatUser.where { sql("chat_id = %s AND user_id IN (#{users.merge(",")})", [chatId]) }.update { {:message_pending => true} }
     end
   end
 end

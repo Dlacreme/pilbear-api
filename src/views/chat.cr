@@ -32,35 +32,39 @@ module Pilbear::Views
           "updated_at"
         )
     end
-
-    def self.find!(id) : Array(Chat)
-      users = Views::Chat.query
-        .where { sql("id = %s", [id]) }
-        .to_a[0]
-    end
-
-    def self.find?(id) : User | Nil
-      users = Views::Chat.query
-        .where { sql("id = %s", [id]) }
-        .to_a
-      return nil if users.size == 0
-      users[0]
-    end
   end
 
   class ChatWebsocketData
+    property user_id
+    property message
+    property created_at
+
     JSON.mapping(
       user_id: {type: Int32, emit_null: true},
       message: {type: String, emit_null: false},
       created_at: {type: Time, emit_null: false},
     )
+
+    def initialize(user_id : Int32, message : String, created_at : Time)
+      @user_id = user_id
+      @message = message
+      @created_at = created_at
+    end
   end
 
   class ChatWebsocket
+    property user_id
+    property socket
+
     JSON.mapping(
       type: {type: String, emit_null: false},
       data: {type: ChatWebsocketData, emit_null: false},
     )
+
+    def initialize(type : String, data : ChatWebsocketData)
+      @type = type
+      @data = data
+    end
   end
 
   class ChatWebsocketList
