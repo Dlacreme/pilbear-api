@@ -7,6 +7,7 @@ module Pilbear::Middlewares
     exclude [
       "/register",
       "/login",
+      "/upload",
     ], "POST"
 
     exclude [

@@ -1,5 +1,13 @@
 version: 1.0
 shards:
+  awscr-s3:
+    github: taylorfinnell/awscr-s3
+    version: 0.7.0
+
+  awscr-signer:
+    github: taylorfinnell/awscr-signer
+    version: 0.7.0
+
   bindata:
     github: spider-gazelle/bindata
     version: 1.2.0

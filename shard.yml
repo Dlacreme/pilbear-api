@@ -28,7 +28,9 @@ dependencies:
   jwt:
     github: crystal-community/jwt
     version: 1.4.0
-
+  awscr-s3:
+    github: taylorfinnell/awscr-s3
+    version: 0.7.0
 
 development_dependencies:
   kemal-watcher:

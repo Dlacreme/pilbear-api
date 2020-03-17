@@ -2,8 +2,8 @@
 -- PostgreSQL database dump
 --
 
--- Dumped from database version 10.12 (Ubuntu 10.12-2.pgdg18.04+1)
--- Dumped by pg_dump version 12.2 (Ubuntu 12.2-2.pgdg18.04+1)
+-- Dumped from database version 12.1 (Ubuntu 12.1-1.pgdg16.04+1)
+-- Dumped by pg_dump version 12.2
 
 SET statement_timeout = 0;
 SET lock_timeout = 0;
@@ -17,7 +17,7 @@ SET client_min_messages = warning;
 SET row_security = off;
 
 --
--- Name: confidentiality_enum; Type: TYPE; Schema: public; Owner: postgres
+-- Name: confidentiality_enum; Type: TYPE; Schema: public; Owner: dounpppiruqezn
 --
 
 CREATE TYPE public.confidentiality_enum AS ENUM (
@@ -26,10 +26,10 @@ CREATE TYPE public.confidentiality_enum AS ENUM (
 );
 
 
-ALTER TYPE public.confidentiality_enum OWNER TO postgres;
+ALTER TYPE public.confidentiality_enum OWNER TO dounpppiruqezn;
 
 --
--- Name: event_user_role_enum; Type: TYPE; Schema: public; Owner: postgres
+-- Name: event_user_role_enum; Type: TYPE; Schema: public; Owner: dounpppiruqezn
 --
 
 CREATE TYPE public.event_user_role_enum AS ENUM (
@@ -38,10 +38,10 @@ CREATE TYPE public.event_user_role_enum AS ENUM (
 );
 
 
-ALTER TYPE public.event_user_role_enum OWNER TO postgres;
+ALTER TYPE public.event_user_role_enum OWNER TO dounpppiruqezn;
 
 --
--- Name: gender_enum; Type: TYPE; Schema: public; Owner: postgres
+-- Name: gender_enum; Type: TYPE; Schema: public; Owner: dounpppiruqezn
 --
 
 CREATE TYPE public.gender_enum AS ENUM (
@@ -50,10 +50,10 @@ CREATE TYPE public.gender_enum AS ENUM (
 );
 
 
-ALTER TYPE public.gender_enum OWNER TO postgres;
+ALTER TYPE public.gender_enum OWNER TO dounpppiruqezn;
 
 --
--- Name: user_provider_enum; Type: TYPE; Schema: public; Owner: postgres
+-- Name: user_provider_enum; Type: TYPE; Schema: public; Owner: dounpppiruqezn
 --
 
 CREATE TYPE public.user_provider_enum AS ENUM (
@@ -62,10 +62,10 @@ CREATE TYPE public.user_provider_enum AS ENUM (
 );
 
 
-ALTER TYPE public.user_provider_enum OWNER TO postgres;
+ALTER TYPE public.user_provider_enum OWNER TO dounpppiruqezn;
 
 --
--- Name: user_role_enum; Type: TYPE; Schema: public; Owner: postgres
+-- Name: user_role_enum; Type: TYPE; Schema: public; Owner: dounpppiruqezn
 --
 
 CREATE TYPE public.user_role_enum AS ENUM (
@@ -74,12 +74,51 @@ CREATE TYPE public.user_role_enum AS ENUM (
 );
 
 
-ALTER TYPE public.user_role_enum OWNER TO postgres;
+ALTER TYPE public.user_role_enum OWNER TO dounpppiruqezn;
+
+--
+-- Name: calculate_distance(double precision, double precision, double precision, double precision, character varying); Type: FUNCTION; Schema: public; Owner: dounpppiruqezn
+--
+
+CREATE FUNCTION public.calculate_distance(lat1 double precision, lon1 double precision, lat2 double precision, lon2 double precision, units character varying) RETURNS double precision
+    LANGUAGE plpgsql
+    AS $$
+    DECLARE
+        dist float = 0;
+        radlat1 float;
+        radlat2 float;
+        theta float;
+        radtheta float;
+    BEGIN
+        -- According to the original function, I changed the OR for AND which make more sense
+        IF lat1 = lat2 AND lon1 = lon2
+            THEN RETURN dist;
+        ELSE
+            radlat1 = pi() * lat1 / 180;
+            radlat2 = pi() * lat2 / 180;
+            theta = lon1 - lon2;
+            radtheta = pi() * theta / 180;
+            dist = sin(radlat1) * sin(radlat2) + cos(radlat1) + cos(radlat2) * cos(radtheta);
+            IF dist > 1 THEN dist = 1; END IF;
+            dist = acos(dist);
+            dist = dist * 180 / pi();
+            dist = dist * 60 * 1.1515;
+            IF units = 'K' THEN dist = dist * 1.609344; END IF;
+            IF units = 'N' THEN dist = dist * 0.8684; END IF;
+            RETURN dist;
+        END IF;
+    END;
+$$;
+
+
+ALTER FUNCTION public.calculate_distance(lat1 double precision, lon1 double precision, lat2 double precision, lon2 double precision, units character varying) OWNER TO dounpppiruqezn;
 
 SET default_tablespace = '';
 
+SET default_table_access_method = heap;
+
 --
--- Name: categories; Type: TABLE; Schema: public; Owner: postgres
+-- Name: categories; Type: TABLE; Schema: public; Owner: dounpppiruqezn
 --
 
 CREATE TABLE public.categories (
@@ -89,125 +128,10 @@ CREATE TABLE public.categories (
 );
 
 
-ALTER TABLE public.categories OWNER TO postgres;
+ALTER TABLE public.categories OWNER TO dounpppiruqezn;
 
 --
--- Name: chatmessages; Type: TABLE; Schema: public; Owner: postgres
---
-
-CREATE TABLE public.chatmessages (
-    id integer NOT NULL,
-    message character varying(254) NOT NULL,
-    chat_id integer,
-    user_id integer,
-    created_at timestamp without time zone NOT NULL,
-    updated_at timestamp without time zone NOT NULL
-);
-
-
-ALTER TABLE public.chatmessages OWNER TO postgres;
-
---
--- Name: chatmessages_id_seq; Type: SEQUENCE; Schema: public; Owner: postgres
---
-
-CREATE SEQUENCE public.chatmessages_id_seq
-    AS integer
-    START WITH 1
-    INCREMENT BY 1
-    NO MINVALUE
-    NO MAXVALUE
-    CACHE 1;
-
-
-ALTER TABLE public.chatmessages_id_seq OWNER TO postgres;
-
---
--- Name: chatmessages_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: postgres
---
-
-ALTER SEQUENCE public.chatmessages_id_seq OWNED BY public.chatmessages.id;
-
-
---
--- Name: chats; Type: TABLE; Schema: public; Owner: postgres
---
-
-CREATE TABLE public.chats (
-    id integer NOT NULL,
-    name character varying(254) NOT NULL,
-    valid_time timestamp without time zone,
-    deleted boolean DEFAULT false NOT NULL,
-    event_id integer,
-    created_at timestamp without time zone NOT NULL,
-    updated_at timestamp without time zone NOT NULL
-);
-
-
-ALTER TABLE public.chats OWNER TO postgres;
-
---
--- Name: chats_id_seq; Type: SEQUENCE; Schema: public; Owner: postgres
---
-
-CREATE SEQUENCE public.chats_id_seq
-    AS integer
-    START WITH 1
-    INCREMENT BY 1
-    NO MINVALUE
-    NO MAXVALUE
-    CACHE 1;
-
-
-ALTER TABLE public.chats_id_seq OWNER TO postgres;
-
---
--- Name: chats_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: postgres
---
-
-ALTER SEQUENCE public.chats_id_seq OWNED BY public.chats.id;
-
-
---
--- Name: chatusers; Type: TABLE; Schema: public; Owner: postgres
---
-
-CREATE TABLE public.chatusers (
-    id integer NOT NULL,
-    message_pending boolean DEFAULT true NOT NULL,
-    chat_id integer,
-    user_id integer,
-    created_at timestamp without time zone NOT NULL,
-    updated_at timestamp without time zone NOT NULL
-);
-
-
-ALTER TABLE public.chatusers OWNER TO postgres;
-
---
--- Name: chatusers_id_seq; Type: SEQUENCE; Schema: public; Owner: postgres
---
-
-CREATE SEQUENCE public.chatusers_id_seq
-    AS integer
-    START WITH 1
-    INCREMENT BY 1
-    NO MINVALUE
-    NO MAXVALUE
-    CACHE 1;
-
-
-ALTER TABLE public.chatusers_id_seq OWNER TO postgres;
-
---
--- Name: chatusers_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: postgres
---
-
-ALTER SEQUENCE public.chatusers_id_seq OWNED BY public.chatusers.id;
-
-
---
--- Name: cities; Type: TABLE; Schema: public; Owner: postgres
+-- Name: cities; Type: TABLE; Schema: public; Owner: dounpppiruqezn
 --
 
 CREATE TABLE public.cities (
@@ -217,10 +141,10 @@ CREATE TABLE public.cities (
 );
 
 
-ALTER TABLE public.cities OWNER TO postgres;
+ALTER TABLE public.cities OWNER TO dounpppiruqezn;
 
 --
--- Name: cities_id_seq; Type: SEQUENCE; Schema: public; Owner: postgres
+-- Name: cities_id_seq; Type: SEQUENCE; Schema: public; Owner: dounpppiruqezn
 --
 
 CREATE SEQUENCE public.cities_id_seq
@@ -232,17 +156,17 @@ CREATE SEQUENCE public.cities_id_seq
     CACHE 1;
 
 
-ALTER TABLE public.cities_id_seq OWNER TO postgres;
+ALTER TABLE public.cities_id_seq OWNER TO dounpppiruqezn;
 
 --
--- Name: cities_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: postgres
+-- Name: cities_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: dounpppiruqezn
 --
 
 ALTER SEQUENCE public.cities_id_seq OWNED BY public.cities.id;
 
 
 --
--- Name: countries; Type: TABLE; Schema: public; Owner: postgres
+-- Name: countries; Type: TABLE; Schema: public; Owner: dounpppiruqezn
 --
 
 CREATE TABLE public.countries (
@@ -252,10 +176,10 @@ CREATE TABLE public.countries (
 );
 
 
-ALTER TABLE public.countries OWNER TO postgres;
+ALTER TABLE public.countries OWNER TO dounpppiruqezn;
 
 --
--- Name: event_users; Type: TABLE; Schema: public; Owner: postgres
+-- Name: event_users; Type: TABLE; Schema: public; Owner: dounpppiruqezn
 --
 
 CREATE TABLE public.event_users (
@@ -268,10 +192,10 @@ CREATE TABLE public.event_users (
 );
 
 
-ALTER TABLE public.event_users OWNER TO postgres;
+ALTER TABLE public.event_users OWNER TO dounpppiruqezn;
 
 --
--- Name: event_users_id_seq; Type: SEQUENCE; Schema: public; Owner: postgres
+-- Name: event_users_id_seq; Type: SEQUENCE; Schema: public; Owner: dounpppiruqezn
 --
 
 CREATE SEQUENCE public.event_users_id_seq
@@ -283,17 +207,17 @@ CREATE SEQUENCE public.event_users_id_seq
     CACHE 1;
 
 
-ALTER TABLE public.event_users_id_seq OWNER TO postgres;
+ALTER TABLE public.event_users_id_seq OWNER TO dounpppiruqezn;
 
 --
--- Name: event_users_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: postgres
+-- Name: event_users_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: dounpppiruqezn
 --
 
 ALTER SEQUENCE public.event_users_id_seq OWNED BY public.event_users.id;
 
 
 --
--- Name: events; Type: TABLE; Schema: public; Owner: postgres
+-- Name: events; Type: TABLE; Schema: public; Owner: dounpppiruqezn
 --
 
 CREATE TABLE public.events (
@@ -313,10 +237,10 @@ CREATE TABLE public.events (
 );
 
 
-ALTER TABLE public.events OWNER TO postgres;
+ALTER TABLE public.events OWNER TO dounpppiruqezn;
 
 --
--- Name: events_id_seq; Type: SEQUENCE; Schema: public; Owner: postgres
+-- Name: events_id_seq; Type: SEQUENCE; Schema: public; Owner: dounpppiruqezn
 --
 
 CREATE SEQUENCE public.events_id_seq
@@ -328,17 +252,17 @@ CREATE SEQUENCE public.events_id_seq
     CACHE 1;
 
 
-ALTER TABLE public.events_id_seq OWNER TO postgres;
+ALTER TABLE public.events_id_seq OWNER TO dounpppiruqezn;
 
 --
--- Name: events_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: postgres
+-- Name: events_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: dounpppiruqezn
 --
 
 ALTER SEQUENCE public.events_id_seq OWNED BY public.events.id;
 
 
 --
--- Name: languages; Type: TABLE; Schema: public; Owner: postgres
+-- Name: languages; Type: TABLE; Schema: public; Owner: dounpppiruqezn
 --
 
 CREATE TABLE public.languages (
@@ -348,10 +272,10 @@ CREATE TABLE public.languages (
 );
 
 
-ALTER TABLE public.languages OWNER TO postgres;
+ALTER TABLE public.languages OWNER TO dounpppiruqezn;
 
 --
--- Name: locations; Type: TABLE; Schema: public; Owner: postgres
+-- Name: locations; Type: TABLE; Schema: public; Owner: dounpppiruqezn
 --
 
 CREATE TABLE public.locations (
@@ -368,10 +292,10 @@ CREATE TABLE public.locations (
 );
 
 
-ALTER TABLE public.locations OWNER TO postgres;
+ALTER TABLE public.locations OWNER TO dounpppiruqezn;
 
 --
--- Name: locations_id_seq; Type: SEQUENCE; Schema: public; Owner: postgres
+-- Name: locations_id_seq; Type: SEQUENCE; Schema: public; Owner: dounpppiruqezn
 --
 
 CREATE SEQUENCE public.locations_id_seq
@@ -383,17 +307,17 @@ CREATE SEQUENCE public.locations_id_seq
     CACHE 1;
 
 
-ALTER TABLE public.locations_id_seq OWNER TO postgres;
+ALTER TABLE public.locations_id_seq OWNER TO dounpppiruqezn;
 
 --
--- Name: locations_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: postgres
+-- Name: locations_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: dounpppiruqezn
 --
 
 ALTER SEQUENCE public.locations_id_seq OWNED BY public.locations.id;
 
 
 --
--- Name: migration_versions; Type: TABLE; Schema: public; Owner: postgres
+-- Name: migration_versions; Type: TABLE; Schema: public; Owner: dounpppiruqezn
 --
 
 CREATE TABLE public.migration_versions (
@@ -402,10 +326,10 @@ CREATE TABLE public.migration_versions (
 );
 
 
-ALTER TABLE public.migration_versions OWNER TO postgres;
+ALTER TABLE public.migration_versions OWNER TO dounpppiruqezn;
 
 --
--- Name: migration_versions_id_seq; Type: SEQUENCE; Schema: public; Owner: postgres
+-- Name: migration_versions_id_seq; Type: SEQUENCE; Schema: public; Owner: dounpppiruqezn
 --
 
 CREATE SEQUENCE public.migration_versions_id_seq
@@ -417,17 +341,17 @@ CREATE SEQUENCE public.migration_versions_id_seq
     CACHE 1;
 
 
-ALTER TABLE public.migration_versions_id_seq OWNER TO postgres;
+ALTER TABLE public.migration_versions_id_seq OWNER TO dounpppiruqezn;
 
 --
--- Name: migration_versions_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: postgres
+-- Name: migration_versions_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: dounpppiruqezn
 --
 
 ALTER SEQUENCE public.migration_versions_id_seq OWNED BY public.migration_versions.id;
 
 
 --
--- Name: profiles; Type: TABLE; Schema: public; Owner: postgres
+-- Name: profiles; Type: TABLE; Schema: public; Owner: dounpppiruqezn
 --
 
 CREATE TABLE public.profiles (
@@ -441,10 +365,10 @@ CREATE TABLE public.profiles (
 );
 
 
-ALTER TABLE public.profiles OWNER TO postgres;
+ALTER TABLE public.profiles OWNER TO dounpppiruqezn;
 
 --
--- Name: profiles_id_seq; Type: SEQUENCE; Schema: public; Owner: postgres
+-- Name: profiles_id_seq; Type: SEQUENCE; Schema: public; Owner: dounpppiruqezn
 --
 
 CREATE SEQUENCE public.profiles_id_seq
@@ -456,17 +380,17 @@ CREATE SEQUENCE public.profiles_id_seq
     CACHE 1;
 
 
-ALTER TABLE public.profiles_id_seq OWNER TO postgres;
+ALTER TABLE public.profiles_id_seq OWNER TO dounpppiruqezn;
 
 --
--- Name: profiles_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: postgres
+-- Name: profiles_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: dounpppiruqezn
 --
 
 ALTER SEQUENCE public.profiles_id_seq OWNED BY public.profiles.id;
 
 
 --
--- Name: user_categories; Type: TABLE; Schema: public; Owner: postgres
+-- Name: user_categories; Type: TABLE; Schema: public; Owner: dounpppiruqezn
 --
 
 CREATE TABLE public.user_categories (
@@ -476,10 +400,10 @@ CREATE TABLE public.user_categories (
 );
 
 
-ALTER TABLE public.user_categories OWNER TO postgres;
+ALTER TABLE public.user_categories OWNER TO dounpppiruqezn;
 
 --
--- Name: user_categories_id_seq; Type: SEQUENCE; Schema: public; Owner: postgres
+-- Name: user_categories_id_seq; Type: SEQUENCE; Schema: public; Owner: dounpppiruqezn
 --
 
 CREATE SEQUENCE public.user_categories_id_seq
@@ -491,17 +415,17 @@ CREATE SEQUENCE public.user_categories_id_seq
     CACHE 1;
 
 
-ALTER TABLE public.user_categories_id_seq OWNER TO postgres;
+ALTER TABLE public.user_categories_id_seq OWNER TO dounpppiruqezn;
 
 --
--- Name: user_categories_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: postgres
+-- Name: user_categories_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: dounpppiruqezn
 --
 
 ALTER SEQUENCE public.user_categories_id_seq OWNED BY public.user_categories.id;
 
 
 --
--- Name: users; Type: TABLE; Schema: public; Owner: postgres
+-- Name: users; Type: TABLE; Schema: public; Owner: dounpppiruqezn
 --
 
 CREATE TABLE public.users (
@@ -517,10 +441,10 @@ CREATE TABLE public.users (
 );
 
 
-ALTER TABLE public.users OWNER TO postgres;
+ALTER TABLE public.users OWNER TO dounpppiruqezn;
 
 --
--- Name: users_id_seq; Type: SEQUENCE; Schema: public; Owner: postgres
+-- Name: users_id_seq; Type: SEQUENCE; Schema: public; Owner: dounpppiruqezn
 --
 
 CREATE SEQUENCE public.users_id_seq
@@ -532,94 +456,73 @@ CREATE SEQUENCE public.users_id_seq
     CACHE 1;
 
 
-ALTER TABLE public.users_id_seq OWNER TO postgres;
+ALTER TABLE public.users_id_seq OWNER TO dounpppiruqezn;
 
 --
--- Name: users_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: postgres
+-- Name: users_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: dounpppiruqezn
 --
 
 ALTER SEQUENCE public.users_id_seq OWNED BY public.users.id;
 
 
 --
--- Name: chatmessages id; Type: DEFAULT; Schema: public; Owner: postgres
---
-
-ALTER TABLE ONLY public.chatmessages ALTER COLUMN id SET DEFAULT nextval('public.chatmessages_id_seq'::regclass);
-
-
---
--- Name: chats id; Type: DEFAULT; Schema: public; Owner: postgres
---
-
-ALTER TABLE ONLY public.chats ALTER COLUMN id SET DEFAULT nextval('public.chats_id_seq'::regclass);
-
-
---
--- Name: chatusers id; Type: DEFAULT; Schema: public; Owner: postgres
---
-
-ALTER TABLE ONLY public.chatusers ALTER COLUMN id SET DEFAULT nextval('public.chatusers_id_seq'::regclass);
-
-
---
--- Name: cities id; Type: DEFAULT; Schema: public; Owner: postgres
+-- Name: cities id; Type: DEFAULT; Schema: public; Owner: dounpppiruqezn
 --
 
 ALTER TABLE ONLY public.cities ALTER COLUMN id SET DEFAULT nextval('public.cities_id_seq'::regclass);
 
 
 --
--- Name: event_users id; Type: DEFAULT; Schema: public; Owner: postgres
+-- Name: event_users id; Type: DEFAULT; Schema: public; Owner: dounpppiruqezn
 --
 
 ALTER TABLE ONLY public.event_users ALTER COLUMN id SET DEFAULT nextval('public.event_users_id_seq'::regclass);
 
 
 --
--- Name: events id; Type: DEFAULT; Schema: public; Owner: postgres
+-- Name: events id; Type: DEFAULT; Schema: public; Owner: dounpppiruqezn
 --
 
 ALTER TABLE ONLY public.events ALTER COLUMN id SET DEFAULT nextval('public.events_id_seq'::regclass);
 
 
 --
--- Name: locations id; Type: DEFAULT; Schema: public; Owner: postgres
+-- Name: locations id; Type: DEFAULT; Schema: public; Owner: dounpppiruqezn
 --
 
 ALTER TABLE ONLY public.locations ALTER COLUMN id SET DEFAULT nextval('public.locations_id_seq'::regclass);
 
 
 --
--- Name: migration_versions id; Type: DEFAULT; Schema: public; Owner: postgres
+-- Name: migration_versions id; Type: DEFAULT; Schema: public; Owner: dounpppiruqezn
 --
 
 ALTER TABLE ONLY public.migration_versions ALTER COLUMN id SET DEFAULT nextval('public.migration_versions_id_seq'::regclass);
 
 
 --
--- Name: profiles id; Type: DEFAULT; Schema: public; Owner: postgres
+-- Name: profiles id; Type: DEFAULT; Schema: public; Owner: dounpppiruqezn
 --
 
 ALTER TABLE ONLY public.profiles ALTER COLUMN id SET DEFAULT nextval('public.profiles_id_seq'::regclass);
 
 
 --
--- Name: user_categories id; Type: DEFAULT; Schema: public; Owner: postgres
+-- Name: user_categories id; Type: DEFAULT; Schema: public; Owner: dounpppiruqezn
 --
 
 ALTER TABLE ONLY public.user_categories ALTER COLUMN id SET DEFAULT nextval('public.user_categories_id_seq'::regclass);
 
 
 --
--- Name: users id; Type: DEFAULT; Schema: public; Owner: postgres
+-- Name: users id; Type: DEFAULT; Schema: public; Owner: dounpppiruqezn
 --
 
 ALTER TABLE ONLY public.users ALTER COLUMN id SET DEFAULT nextval('public.users_id_seq'::regclass);
 
 
 --
--- Name: categories categories_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres
+-- Name: categories categories_pkey; Type: CONSTRAINT; Schema: public; Owner: dounpppiruqezn
 --
 
 ALTER TABLE ONLY public.categories
@@ -627,31 +530,7 @@ ALTER TABLE ONLY public.categories
 
 
 --
--- Name: chatmessages chatmessages_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres
---
-
-ALTER TABLE ONLY public.chatmessages
-    ADD CONSTRAINT chatmessages_pkey PRIMARY KEY (id);
-
-
---
--- Name: chats chats_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres
---
-
-ALTER TABLE ONLY public.chats
-    ADD CONSTRAINT chats_pkey PRIMARY KEY (id);
-
-
---
--- Name: chatusers chatusers_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres
---
-
-ALTER TABLE ONLY public.chatusers
-    ADD CONSTRAINT chatusers_pkey PRIMARY KEY (id);
-
-
---
--- Name: cities cities_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres
+-- Name: cities cities_pkey; Type: CONSTRAINT; Schema: public; Owner: dounpppiruqezn
 --
 
 ALTER TABLE ONLY public.cities
@@ -659,7 +538,7 @@ ALTER TABLE ONLY public.cities
 
 
 --
--- Name: countries countries_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres
+-- Name: countries countries_pkey; Type: CONSTRAINT; Schema: public; Owner: dounpppiruqezn
 --
 
 ALTER TABLE ONLY public.countries
@@ -667,7 +546,7 @@ ALTER TABLE ONLY public.countries
 
 
 --
--- Name: event_users event_users_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres
+-- Name: event_users event_users_pkey; Type: CONSTRAINT; Schema: public; Owner: dounpppiruqezn
 --
 
 ALTER TABLE ONLY public.event_users
@@ -675,7 +554,7 @@ ALTER TABLE ONLY public.event_users
 
 
 --
--- Name: events events_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres
+-- Name: events events_pkey; Type: CONSTRAINT; Schema: public; Owner: dounpppiruqezn
 --
 
 ALTER TABLE ONLY public.events
@@ -683,7 +562,7 @@ ALTER TABLE ONLY public.events
 
 
 --
--- Name: languages languages_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres
+-- Name: languages languages_pkey; Type: CONSTRAINT; Schema: public; Owner: dounpppiruqezn
 --
 
 ALTER TABLE ONLY public.languages
@@ -691,7 +570,7 @@ ALTER TABLE ONLY public.languages
 
 
 --
--- Name: locations locations_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres
+-- Name: locations locations_pkey; Type: CONSTRAINT; Schema: public; Owner: dounpppiruqezn
 --
 
 ALTER TABLE ONLY public.locations
@@ -699,7 +578,7 @@ ALTER TABLE ONLY public.locations
 
 
 --
--- Name: migration_versions migration_versions_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres
+-- Name: migration_versions migration_versions_pkey; Type: CONSTRAINT; Schema: public; Owner: dounpppiruqezn
 --
 
 ALTER TABLE ONLY public.migration_versions
@@ -707,7 +586,7 @@ ALTER TABLE ONLY public.migration_versions
 
 
 --
--- Name: profiles profiles_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres
+-- Name: profiles profiles_pkey; Type: CONSTRAINT; Schema: public; Owner: dounpppiruqezn
 --
 
 ALTER TABLE ONLY public.profiles
@@ -715,7 +594,7 @@ ALTER TABLE ONLY public.profiles
 
 
 --
--- Name: user_categories user_categories_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres
+-- Name: user_categories user_categories_pkey; Type: CONSTRAINT; Schema: public; Owner: dounpppiruqezn
 --
 
 ALTER TABLE ONLY public.user_categories
@@ -723,7 +602,7 @@ ALTER TABLE ONLY public.user_categories
 
 
 --
--- Name: users users_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres
+-- Name: users users_pkey; Type: CONSTRAINT; Schema: public; Owner: dounpppiruqezn
 --
 
 ALTER TABLE ONLY public.users
@@ -731,46 +610,14 @@ ALTER TABLE ONLY public.users
 
 
 --
--- Name: user_email_index; Type: INDEX; Schema: public; Owner: postgres
+-- Name: user_email_index; Type: INDEX; Schema: public; Owner: dounpppiruqezn
 --
 
 CREATE UNIQUE INDEX user_email_index ON public.users USING btree (email);
 
 
 --
--- Name: chatusers fk_cr_101665b7cc; Type: FK CONSTRAINT; Schema: public; Owner: postgres
---
-
-ALTER TABLE ONLY public.chatusers
-    ADD CONSTRAINT fk_cr_101665b7cc FOREIGN KEY (user_id) REFERENCES public.users(id) ON UPDATE RESTRICT ON DELETE RESTRICT;
-
-
---
--- Name: chats fk_cr_2fa1c5633e; Type: FK CONSTRAINT; Schema: public; Owner: postgres
---
-
-ALTER TABLE ONLY public.chats
-    ADD CONSTRAINT fk_cr_2fa1c5633e FOREIGN KEY (event_id) REFERENCES public.events(id) ON UPDATE RESTRICT ON DELETE RESTRICT;
-
-
---
--- Name: chatmessages fk_cr_8ddbb16fcf; Type: FK CONSTRAINT; Schema: public; Owner: postgres
---
-
-ALTER TABLE ONLY public.chatmessages
-    ADD CONSTRAINT fk_cr_8ddbb16fcf FOREIGN KEY (user_id) REFERENCES public.users(id) ON UPDATE RESTRICT ON DELETE RESTRICT;
-
-
---
--- Name: chatusers fk_cr_a74b25a213; Type: FK CONSTRAINT; Schema: public; Owner: postgres
---
-
-ALTER TABLE ONLY public.chatusers
-    ADD CONSTRAINT fk_cr_a74b25a213 FOREIGN KEY (chat_id) REFERENCES public.chats(id) ON UPDATE RESTRICT ON DELETE RESTRICT;
-
-
---
--- Name: users fk_cr_a8794354f0; Type: FK CONSTRAINT; Schema: public; Owner: postgres
+-- Name: users fk_cr_a8794354f0; Type: FK CONSTRAINT; Schema: public; Owner: dounpppiruqezn
 --
 
 ALTER TABLE ONLY public.users
@@ -778,11 +625,20 @@ ALTER TABLE ONLY public.users
 
 
 --
--- Name: chatmessages fk_cr_f725e58994; Type: FK CONSTRAINT; Schema: public; Owner: postgres
+-- Name: SCHEMA public; Type: ACL; Schema: -; Owner: dounpppiruqezn
 --
 
-ALTER TABLE ONLY public.chatmessages
-    ADD CONSTRAINT fk_cr_f725e58994 FOREIGN KEY (chat_id) REFERENCES public.chats(id) ON UPDATE RESTRICT ON DELETE RESTRICT;
+REVOKE ALL ON SCHEMA public FROM postgres;
+REVOKE ALL ON SCHEMA public FROM PUBLIC;
+GRANT ALL ON SCHEMA public TO dounpppiruqezn;
+GRANT ALL ON SCHEMA public TO PUBLIC;
+
+
+--
+-- Name: LANGUAGE plpgsql; Type: ACL; Schema: -; Owner: postgres
+--
+
+GRANT ALL ON LANGUAGE plpgsql TO dounpppiruqezn;
 
 
 --
