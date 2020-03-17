@@ -1,0 +1,37 @@
+<!doctype html>
+<html>
+  <head>
+    <title>Kemal Chat</title>
+    <script src="https://code.jquery.com/jquery-1.11.3.js"></script>
+    <script>
+      $(document).ready(function() {
+        // Open WebSocket connection
+        var ws = new WebSocket("ws://127.0.0.1:3000/chat/3");
+        // ws.send('toto');
+        // Append each message
+        ws.onopen = function(e) {
+          ws.send('{"type": "login", "data": {"message": "login", "user_id": 1, "created_at": "' + new Date().toISOString() + '"}}');
+        };
+        ws.onmessage = function(e) {
+          var data = JSON.parse(e.data);
+          console.info(data);
+          $('#chat').append(data.data.created_at + " - " + data.data.user_id + ": " + data.data.message + "\n");
+        };
+
+        $("form").bind('submit', function(e) {
+          var message = $('#msg').val();
+          ws.send('{"type": "message", "data": {"message": "' + message + '", "user_id": 1, "created_at": "' + new Date().toISOString() + '"}}');
+          $('#msg').val(''); $('#msg').focus();
+          e.preventDefault();
+        });
+      });
+    </script>
+  </head>
+  <body>
+    <pre id='chat'></pre>
+    <form>
+      <input id='msg' placeholder='message...' />
+      <input type="submit" value="Send">
+    </form>
+  </body>
+</html>

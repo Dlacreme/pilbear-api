@@ -3,4 +3,6 @@
 /bin/
 /.shards/
 *.dwarf
+sentry
+pilbear
 ./sentry

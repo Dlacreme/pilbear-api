@@ -10,6 +10,10 @@ module Pilbear::Middlewares
       "/upload",
     ], "POST"
 
+    exclude [
+      "/chat/*",
+    ], "GET"
+
     # exclude [
 
     # ], "PUT"

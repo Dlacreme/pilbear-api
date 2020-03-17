@@ -1,5 +1,6 @@
 require "kemal"
 require "option_parser"
+require "./extends/*"
 require "./setup"
 require "./handlers/*"
 require "./models/*"

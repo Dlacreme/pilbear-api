@@ -7,10 +7,9 @@ require "./middlewares/password_hash"
 require "./middlewares/public_route"
 
 ###
-### Set up Kemal to run as a web API
+# ## Set up Kemal to run as a web API
 ###
 module Pilbear::Setup
-
   extend self
 
   def validate_env
@@ -20,12 +19,12 @@ module Pilbear::Setup
   def middleware
     # Run kemal as an API
     add_handler Pilbear::Middlewares::APIMiddleware.new
-      # Cryspt potential password
+    # Cryspt potential password
     add_handler Pilbear::Middlewares::PasswordHash.new
     # Provide easy access to our database
     add_handler Pilbear::Middlewares::DBMiddleware.new
     # Check user authentication and set CurrentUser
-    add_handler Pilbear::Middlewares::AuthMiddleware.new
+    # add_handler Pilbear::Middlewares::AuthMiddleware.new
     # Allow user to access specific routes
     add_handler Pilbear::Middlewares::PublicRouteMiddleware.new
   end
@@ -44,5 +43,4 @@ module Pilbear::Setup
     error 401 { {"error": "Unauthorized"}.to_json }
     error 500 { {"error": "Server error"}.to_json }
   end
-
 end
